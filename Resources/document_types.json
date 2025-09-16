@@ -1,0 +1,432 @@
+[
+    {
+        "code": "AGGREGATION_DOCUMENT",
+        "name": "Формирование упаковки",
+        "format": "JSON"
+    },
+    {
+        "code": "AGGREGATION_DOCUMENT_XML",
+        "name": "Формирование упаковки",
+        "format": "XML"
+    },
+    {
+        "code": "SETS_AGGREGATION",
+        "name": "Формирование набора",
+        "format": "JSON"
+    },
+    {
+        "code": "SETS_AGGREGATION_XML",
+        "name": "Формирование набора",
+        "format": "XML"
+    },
+    {
+        "code": "DISAGGREGATION_DOCUMENT",
+        "name": "Расформирование упаковки",
+        "format": "JSON"
+    },
+    {
+        "code": "DISAGGREGATION_DOCUMENT_XML",
+        "name": "Расформирование упаковки",
+        "format": "XML"
+    },
+    {
+        "code": "REAGGREGATION_DOCUMENT",
+        "name": "Трансформация упаковки",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_INTRODUCE_GOODS",
+        "name": "Ввод в оборот. Производство РФ",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_INTRODUCE_GOODS_CSV",
+        "name": "Ввод в оборот. Производство РФ",
+        "format": "CSV"
+    },
+    {
+        "code": "LP_INTRODUCE_GOODS_XML",
+        "name": "Ввод в оборот. Производство РФ",
+        "format": "XML"
+    },
+    {
+        "code": "LP_SHIP_GOODS",
+        "name": "Отгрузка («Товары из натурального меха»)",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_SHIP_GOODS_CSV",
+        "name": "Отгрузка («Товары из натурального меха»)",
+        "format": "CSV"
+    },
+    {
+        "code": "LP_SHIP_GOODS_XML",
+        "name": "Отгрузка («Товары из натурального меха»)",
+        "format": "XML"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_EXPORT",
+        "name": "Отгрузка в ЕАЭС (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_EXPORT_CSV",
+        "name": "Отгрузка в ЕАЭС (ОСУ)",
+        "format": "CSV"
+    },
+    {
+        "code": "REPORT_REWEIGHING",
+        "name": "Отчёт о перевзвешивании",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_ACCEPT_GOODS",
+        "name": "Приёмка",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_ACCEPT_GOODS_XML",
+        "name": "Приёмка",
+        "format": "XML"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_ACCEPTANCE",
+        "name": "Приёмка из ЕАЭС (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_ACCEPTANCE_CSV",
+        "name": "Приёмка из ЕАЭС (ОСУ)",
+        "format": "CSV"
+    },
+    {
+        "code": "LK_REMARK",
+        "name": "Перемаркировка",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_REMARK_XML",
+        "name": "Перемаркировка",
+        "format": "XML"
+    },
+    {
+        "code": "LP_GOODS_IMPORT",
+        "name": "Ввод в оборот. Производство вне ЕАЭС",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_CANCEL_SHIPMENT",
+        "name": "Отмена отгрузки",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_KM_CANCELLATION",
+        "name": "Списание",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_APPLIED_KM_CANCELLATION",
+        "name": "Списание (под последующую перемаркировку)",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_CONTRACT_COMMISSIONING",
+        "name": "Ввод в оборот. Контрактное производство",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_CONTRACT_COMMISSIONING_XML",
+        "name": "Ввод в оборот. Контрактное производство",
+        "format": "XML"
+    },
+    {
+        "code": "LK_INDI_COMMISSIONING",
+        "name": "Ввод в оборот. Полученных от физических лиц",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_INDI_COMMISSIONING_XML",
+        "name": "Ввод в оборот. Полученных от физических лиц",
+        "format": "XML"
+    },
+    {
+        "code": "LP_RETURN",
+        "name": "Возврат в оборот",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_RETURN_XML",
+        "name": "Возврат в оборот",
+        "format": "XML"
+    },
+    {
+        "code": "LP_INTRODUCE_OST",
+        "name": "Ввод в оборот. Остатки",
+        "format": "JSON"
+    },
+    {
+        "code": "CROSSBORDER",
+        "name": "Ввод в оборот. Трансграничная торговля",
+        "format": "JSON"
+    },
+    {
+        "code": "FURS_CROSSBORDER",
+        "name": "Ввод в оборот. Трансграничная торговля («Товары из натурального меха»)",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_RECEIPT",
+        "name": "Вывод из оборота",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_RECEIPT_CSV",
+        "name": "Вывод из оборота",
+        "format": "CSV"
+    },
+    {
+        "code": "LK_RECEIPT_XML",
+        "name": "Вывод из оборота",
+        "format": "XML"
+    },
+    {
+        "code": "LK_RECEIPT_CANCEL",
+        "name": "Отмена вывода из оборота",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_FTS_INTRODUCE",
+        "name": "Ввод в оборот. Импорт с ФТС",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_FTS_INTRODUCE_XML",
+        "name": "Ввод в оборот. Импорт с ФТС",
+        "format": "XML"
+    },
+    {
+        "code": "ATK_AGGREGATION",
+        "name": "Формирование АТК",
+        "format": "JSON"
+    },
+    {
+        "code": "ATK_AGGREGATION_XML",
+        "name": "Формирование АТК",
+        "format": "XML"
+    },
+    {
+        "code": "ATK_TRANSFORMATION",
+        "name": "Трансформация АТК",
+        "format": "JSON"
+    },
+    {
+        "code": "ATK_DISAGGREGATION",
+        "name": "Расформирование АТК",
+        "format": "JSON"
+    },
+    {
+        "code": "WRITE_OFF",
+        "name": "Списание (общий документ)",
+        "format": "JSON"
+    },
+    {
+        "code": "ALCO_UTILISED",
+        "name": "Отчёт о нанесении ФСМ",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_CROSSBORDER_EXPORT",
+        "name": "Отгрузка в ЕАЭС",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_CROSSBORDER_EXPORT_CSV",
+        "name": "Отгрузка в ЕАЭС",
+        "format": "CSV"
+    },
+    {
+        "code": "LK_INDIVIDUALIZATION",
+        "name": "Индивидуализация КиЗ («Товары из натурального меха»)",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_INDIVIDUALIZATION_XML",
+        "name": "Индивидуализация КиЗ («Товары из натурального меха»)",
+        "format": "XML"
+    },
+    {
+        "code": "FURS_FTS_INTRODUCE",
+        "name": "Ввод в оборот. Импорт ФТС («Товары из натурального меха»)",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_GTIN_RECEIPT",
+        "name": "Вывод из оборота (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "LK_GTIN_RECEIPT_CANCEL",
+        "name": "Отмена вывода из оборота (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "CIS_INFORMATION_CHANGE",
+        "name": "Корректировка сведений о кодах",
+        "format": "JSON"
+    },
+    {
+        "code": "CIS_NOTICE",
+        "name": "Уведомление о состоянии кодов",
+        "format": "JSON"
+    },
+    {
+        "code": "CONNECT_TAP",
+        "name": "Подключение кега к оборудованию для розлива",
+        "format": "JSON"
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT",
+        "name": "УПД",
+        "format": "XML"
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT_FIX",
+        "name": "УПД(и)",
+        "format": "XML"
+    },
+    {
+        "code": "FIXATION",
+        "name": "УПД (отгрузка продукции)",
+        "format": "XML"
+    },
+    {
+        "code": "FIXATION_CANCEL",
+        "name": "Отмена отгрузки по УПД",
+        "format": "JSON"
+    },
+    {
+        "code": "AGGREGATION_DOCUMENT",
+        "name": "Формирование упаковки",
+        "format": "JSON"
+    },
+    {
+        "code": "AGGREGATION_DOCUMENT",
+        "name": "Формирование упаковки",
+        "format": "XML"
+    },
+    {
+        "code": "EAS_CROSSBORDER",
+        "name": "Отгрузка из ЕАЭС с признанием КИ",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_SHIP_GOODS_CROSSBORDER",
+        "name": "Отгрузка из ЕАЭС",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_IMPORT",
+        "name": "Отгрузка из ЕАЭС (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_CANCEL_SHIPMENT_CROSSBORDER",
+        "name": "Отмена отгрузки из ЕАЭС",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_CROSSBORDER_EXPORT_ACCEPTANCE",
+        "name": "Приёмка в ЕАЭС",
+        "format": "JSON"
+    },
+    {
+        "code": "EAS_GTIN_CROSSBORDER_EXPORT_ACCEPTANCE",
+        "name": "Приёмка в ЕАЭС (ОСУ)",
+        "format": "JSON"
+    },
+    {
+        "code": "LP_FTS_INTRODUCE_RESPONSE",
+        "name": "Декларация на товары",
+        "format": "JSON"
+    },
+    {
+        "code": "GRAY_ZONE_CSV",
+        "name": "Уведомление о временно непрослеживаемых кодах идентификации («Табачная продукция»)",
+        "format": "CSV"
+    },
+    {
+        "code": "RECEIPT",
+        "name": "Чек (Формируется оператором фискальных данных)",
+        "format": ""
+    },
+    {
+        "code": "RECEIPT_RETURN",
+        "name": "Чек возврата (формируется оператором фискальных данных)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT",
+        "name": "УПД ДОП (накладная)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT",
+        "name": "УПД СЧФ (счет-фактура)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT",
+        "name": "УПД СЧФДОП (счет-фактура+накладная)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT_FIX",
+        "name": "УПД(и) ДОП (на накладную)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT_FIX",
+        "name": "УПД(и) СЧФ (на счет-фактуру)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_TRANSFER_DOCUMENT_FIX",
+        "name": "УПД(и) СЧФДОП",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT",
+        "name": "УКД ДИС (на накладную)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT",
+        "name": "УКД КСЧФ (на счет-фактуру)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT",
+        "name": "УКД КСЧФ ДИС",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT_FIX",
+        "name": "УКД(и) ДИС (исправление корректировки накладной)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT_FIX",
+        "name": "УКД(и) КСЧФ (исправление корректировочной счет-фактуры)",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CORRECTION_DOCUMENT_FIX",
+        "name": "УКД(и) КСЧФ ДИС",
+        "format": ""
+    },
+    {
+        "code": "UNIVERSAL_CANCEL_DOCUMENT",
+        "name": "Аннулирование УД",
+        "format": ""
+    }
+]

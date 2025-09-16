@@ -1,0 +1,10 @@
+[
+  {
+    "code": "LOCAL",
+    "description": "Производство РФ"
+  },
+  {
+    "code": "FOREIGN",
+    "description": "Ввезен в РФ"
+  }
+]

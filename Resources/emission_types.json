@@ -1,0 +1,30 @@
+[
+    {
+        "code": "LOCAL",
+        "description": "Производство РФ"
+    },
+    {
+        "code": "FOREIGN",
+        "description": "Ввезён в РФ"
+    },
+    {
+        "code": "REMAINS",
+        "description": "Маркировка остатков"
+    },
+    {
+        "code": "CROSSBORDER",
+        "description": "Ввезён из стран ЕАЭС"
+    },
+    {
+        "code": "REMARK",
+        "description": "Перемаркировка"
+    },
+    {
+        "code": "COMMISSION",
+        "description": "Принят на комиссию от физического лица"
+    },
+    {
+        "code": "REAPPLY",
+        "description": "Маркировка вне производства или импорта"
+    }
+]

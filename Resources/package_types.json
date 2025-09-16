@@ -1,0 +1,26 @@
+[
+  {
+    "code": "UNIT",
+    "description": "Единица товара (КИ)"
+  },
+  {
+    "code": "GROUP",
+    "description": "Групповая упаковка (КИГУ)"
+  },
+  {
+    "code": "SET",
+    "description": "Набор (КИН)"
+  },
+  {
+    "code": "BUNDLE",
+    "description": "Комплект (КИК)"
+  },
+  {
+    "code": "BOX",
+    "description": "Транспортная упаковка (КИТУ)"
+  },
+  {
+    "code": "ATK",
+    "description": "Агрегированный таможенный код (АТК)"
+  }
+]

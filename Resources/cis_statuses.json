@@ -1,0 +1,87 @@
+[
+    {
+        "id": 0,
+        "code": "EMITTED",
+        "name": "ВЫПУЩЕН"
+    },
+    {
+        "id": 1,
+        "code": "APPLIED",
+        "name": "НАНЕСЁН"
+    },
+    {
+        "id": 2,
+        "code": "INTRODUCED",
+        "name": "В ОБОРОТЕ"
+    },
+    {
+        "id": 3,
+        "code": "RECYCLED",
+        "name": "УТИЛИЗИРОВАН"
+    },
+    {
+        "id": 4,
+        "code": "RETIRED",
+        "name": "ВЫБЫЛ"
+    },
+    {
+        "id": 5,
+        "code": "WRITTEN_OFF",
+        "name": "СПИСАН"
+    },
+    {
+        "id": 6,
+        "code": "DISAGGREGATION",
+        "name": "РАСФОРМИРОВАН"
+    },
+    {
+        "id": 7,
+        "code": "RESERVED_NOT_USED",
+        "name": "ЗАРЕЗЕРВИРОВАН"
+    },
+    {
+        "id": 8,
+        "code": "INTRODUCED_RETURNED",
+        "name": "ВОЗВРАЩЕН В ОБОРОТ"
+    },
+    {
+        "id": 9,
+        "code": "DISAGGREGATED",
+        "name": "ДЕЗАГРЕГИРОВАН"
+    },
+    {
+        "id": 10,
+        "code": "WAIT_SHIPMENT",
+        "name": "ОЖИДАЕТ ПРИЁМКУ"
+    },
+    {
+        "id": 11,
+        "code": "EXPORTED",
+        "name": "ЭКСПОРТ"
+    },
+    {
+        "id": 12,
+        "code": "LOAN_RETIRED",
+        "name": "РАССРОЧКА"
+    },
+    {
+        "id": 13,
+        "code": "REMARK_RETIRED",
+        "name": "ПЕРЕМАРКИРОВАН"
+    },
+    {
+        "id": 14,
+        "code": "APPLIED_NOT_PAID",
+        "name": "НЕ ОПЛАЧЕН"
+    },
+    {
+        "id": 15,
+        "code": "FTS_RESPOND_NOT_OK",
+        "name": "ОТКЛОНЕН ФТС"
+    },
+    {
+        "id": 16,
+        "code": "FTS_RESPOND_WAITING",
+        "name": "ОЖИДАНИЕ ФТС"
+    }
+]

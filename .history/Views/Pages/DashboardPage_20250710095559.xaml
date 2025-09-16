@@ -1,0 +1,158 @@
+﻿<Page
+    x:Class="markapp.Views.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:local="clr-namespace:markapp.Views.Pages"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+
+    mc:Ignorable="d"
+    Title="DashboardPage"
+    d:DataContext="{d:DesignInstance local:DashboardPage, IsDesignTimeCreatable=False}"
+    d:DesignHeight="1200"
+    d:DesignWidth="1000"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" Orientation="Vertical">
+
+            <!-- 🟦 Сопоставление -->
+            <Border BorderBrush="#AAA" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Сопоставление наборов и вложений" FontSize="20" FontWeight="Bold" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Кнопка выбора набора -->
+                        <Button
+                            Grid.Column="0"
+                            Content="Выбрать файл наборов"
+                            Width="180"
+                            Command="{Binding SelectSetsFileCommand}" />
+
+                        <!-- Кнопка запуска -->
+                        <Button
+                            Grid.Column="2"
+                            Content="Старт сопоставления"
+                            Width="180"
+                            Command="{Binding StartMatchingCommand}"
+                            IsEnabled="{Binding IsStartEnabled}" />
+
+                        <!-- Текст с путем к файлу -->
+                        <TextBlock
+                            Grid.Column="3"
+                            Text="{Binding InsertsFilePath}"
+                            FontSize="11"
+                            VerticalAlignment="Center"
+                            TextTrimming="CharacterEllipsis"
+                            Margin="12,0,8,0" />
+
+                        <!-- Кнопка вложений -->
+                        <Button
+                            Grid.Column="4"
+                            Content="📂 Вложения"
+                            Command="{Binding SelectInsertsFileCommand}"
+                            Width="140" />
+                    </Grid>
+
+                    <ProgressBar Height="20" Margin="0,0,0,6" Minimum="0" Maximum="100" Value="{Binding MatchProgress}" />
+                    <TextBlock Text="{Binding MatchStatus}" FontSize="12" Foreground="Gray" />
+                </StackPanel>
+            </Border>
+
+            <!-- 🟨 Привязка GTIN -->
+            <Border BorderBrush="#AAA" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Привязка GTIN" FontSize="20" FontWeight="Bold" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                            Grid.Column="0"
+                            Width="150"
+                            ItemsSource="{Binding AvailableWaves}"
+                            SelectedItem="{Binding SelectedWave}" />
+
+                        <Button
+                            Grid.Column="2"
+                            Content="Выбрать файл групп"
+                            Width="180"
+                            Command="{Binding SelectGroupFileCommand}" />
+                    </Grid>
+
+                    <WrapPanel Orientation="Horizontal" ItemHeight="32" ItemWidth="200" HorizontalAlignment="Left">
+                        <Button Content="Создать словарь товаров" Command="{Binding CreateProductsDictCommand}" />
+                        <Button Content="Привязать setGTIN" Command="{Binding LinkSetGtinCommand}" />
+                        <Button Content="Очистить setGTIN" Command="{Binding ClearSetGtinCommand}" />
+                        <Button Content="Публикация товаров в НК" Command="{Binding PublishProductsCommand}" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- 🌐 Встроенный браузер -->
+            <Border BorderBrush="#AAA" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,0,0,16"
+                    Visibility="{Binding IsBrowserVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Height="375" Width="916">
+                    <TextBlock Text="Браузер для публикации в НК" FontSize="20" FontWeight="Bold" Margin="0,0,0,12" />
+                    <wv2:WebView2 x:Name="Browser"
+                                  Source="{Binding BrowserUrl}"
+                                  HorizontalAlignment="Stretch"
+                                  Height="338"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 🟥 AGG-документы -->
+            <Border BorderBrush="#AAA" BorderThickness="1" Padding="12" CornerRadius="6">
+                <StackPanel>
+                    <TextBlock Text="AGG-документы" FontSize="20" FontWeight="Bold" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                            Grid.Column="0"
+                            Width="250"
+                            ItemsSource="{Binding AvailableCertificates}"
+                            SelectedItem="{Binding SelectedCertificate}" />
+
+                        <Button
+                            Grid.Column="1"
+                            Content="Обновить токен"
+                            Command="{Binding UpdateTokenCommand}"
+                            Margin="12,0,0,0" />
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding AggWaves}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                    <Button Content="{Binding DisplayName}" Command="{Binding CreateAggCommand}" Width="150" />
+                                    <TextBlock Text="{Binding StatusIcon}" FontSize="16" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</Page>

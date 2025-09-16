@@ -1,0 +1,30 @@
+[
+    {
+        "code": "NEW",
+        "description": "Зарегистрирован"
+    },
+    {
+        "code": "PRODUCTION",
+        "description": "Производство"
+    },
+    {
+        "code": "VALIDATION_FAILED",
+        "description": "Ошибка в проверке"
+    },
+    {
+        "code": "IN_PROGRESS",
+        "description": "Заказ в процессе выполнения"
+    },
+    {
+        "code": "SUCCESS",
+        "description": "Заказ выполнен"
+    },
+    {
+        "code": "ERROR",
+        "description": "При выполнении заказа возникла ошибка"
+    },
+    {
+        "code": "RESULT_EXPIRED",
+        "description": "Заказ устарел"
+    }
+]
