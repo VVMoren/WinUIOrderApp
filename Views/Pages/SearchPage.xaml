@@ -7,15 +7,123 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     mc:Ignorable="d"
     d:DesignWidth="1200" d:DesignHeight="800"
-    Title="SearchPage">
+    Title="SearchPage"
+    Background="#FF1F1F1F"
+    Foreground="White">
 
     <Page.Resources>
         <!-- Конвертер для отображения progress bar -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Стиль для текста в DataGrid -->
+        <Style x:Key="DataGridTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,0"/>
+        </Style>
+
+        <!-- Стили для контролов -->
+        <Style x:Key="SearchTextBoxStyle" TargetType="ui:TextBox">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="SearchButtonStyle" TargetType="ui:Button">
+            <Setter Property="Background" Value="#FF2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Стиль для DataGrid -->
+        <Style x:Key="DarkDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#FF1F1F1F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="#FF252525"/>
+            <Setter Property="AlternatingRowBackground" Value="#FF2D2D2D"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#FF333333"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FF333333"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+
+        <!-- Стиль для заголовков колонок DataGrid -->
+        <Style x:Key="DarkDataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Стиль для CheckBox -->
+        <Style x:Key="DarkCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FF666666"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для ячеек DataGrid -->
+        <Style x:Key="DarkDataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#FF2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Упрощенный стиль для строк DataGrid -->
+        <Style x:Key="DarkDataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="0,2,0,2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF333333"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF2196F3"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Page.Resources>
 
-    <!-- Верхняя «панелька» как на скриншоте -->
-    <Grid Background="#141418">
+    <Grid Background="#FF1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
@@ -26,7 +134,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="4"/>
-                <!-- высота полосы прогресса -->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
@@ -36,9 +143,9 @@
 
             <!-- TextBox -->
             <ui:TextBox
+                Grid.Column="0"
+                Style="{StaticResource SearchTextBoxStyle}"
                 Margin="0,0,16,0"
-                FontSize="12" FontWeight="Bold"
-                Height="30"
                 PlaceholderText="Введите запрос"
                 Text="{Binding QueryText, UpdateSourceTrigger=PropertyChanged}"
                 IsEnabled="{Binding IsNotBusy}"/>
@@ -46,20 +153,20 @@
             <!-- ComboBox -->
             <ComboBox
                 Grid.Column="1"
-                Height="30"
+                Style="{StaticResource ComboBoxStyle}"
                 Margin="0,0,16,0"
                 ItemsSource="{Binding Modes}"
                 SelectedItem="{Binding SelectedMode}"
                 DisplayMemberPath="Title"
-                IsEnabled="{Binding IsNotBusy}" FontSize="12"/>
+                IsEnabled="{Binding IsNotBusy}" Foreground="Black"/>
 
             <!-- Button -->
             <ui:Button
                 Grid.Column="2"
-                Height="30" MinWidth="90"
+                Style="{StaticResource SearchButtonStyle}"
                 Content="Поиск"
                 Command="{Binding SearchCommand}"
-                IsEnabled="{Binding IsNotBusy}"/>
+                IsEnabled="{Binding IsNotBusy}" Background="#FFF6F42E" Foreground="Black"/>
 
             <!-- ProgressBar -->
             <ProgressBar Grid.Row="1"
@@ -69,75 +176,51 @@
                          Maximum="100"
                          Value="{Binding Progress}"
                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
-                         Foreground="#0078D7"
-                         Background="#2A2A2A"/>
+                         Foreground="#FF2196F3"
+                         Background="#FF2D2D2D"/>
         </Grid>
 
-        <!-- DataGrid (как на скриншоте: чекбокс, № и динамические столбцы) -->
+        <!-- DataGrid -->
         <DataGrid x:Name="DataGrid"
                   Grid.Row="1"
                   Margin="80,10,80,40"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  HeadersVisibility="Column"
-                  SelectionMode="Single"
-                  CanUserResizeRows="False"
+                  Style="{StaticResource DarkDataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DarkDataGridColumnHeaderStyle}"
+                  CellStyle="{StaticResource DarkDataGridCellStyle}"
+                  RowStyle="{StaticResource DarkDataGridRowStyle}"
                   AlternationCount="10000"
-                  ItemsSource="{Binding Rows}"
-                  Background="#1A1A1A"
-                  Foreground="White"
-                  BorderBrush="Transparent"
-                  RowBackground="#212121"
-                  AlternatingRowBackground="#1C1C1C" Cursor="">
-
-            <!-- Обёртка строки с закруглением (как у вас в шаблоне) -->
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Margin" Value="0,4,0,4"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="DataGridRow">
-                                <Border CornerRadius="12"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="0">
-                                    <SelectiveScrollingGrid>
-                                        <SelectiveScrollingGrid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </SelectiveScrollingGrid.ColumnDefinitions>
-                                        <SelectiveScrollingGrid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </SelectiveScrollingGrid.RowDefinitions>
-
-                                        <DataGridCellsPresenter Grid.Column="1"/>
-                                        <DataGridDetailsPresenter Grid.Row="1" Grid.Column="1"
-                                                                  Visibility="{TemplateBinding DetailsVisibility}"/>
-                                        <DataGridRowHeader Grid.RowSpan="2"
-                                                           SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"/>
-                                    </SelectiveScrollingGrid>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.RowStyle>
+                  ItemsSource="{Binding Rows}" Foreground="#FF333333">
 
             <DataGrid.Columns>
-                <!-- ☑ -->
+                <!-- Чекбокс -->
                 <DataGridTemplateColumn Width="40" Header="☑️">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      HorizontalAlignment="Center"/>
+                            <CheckBox Style="{StaticResource DarkCheckBoxStyle}"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
                 <!-- № -->
-                <DataGridTextColumn Header="№" Width="40"
-                    Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}"/>
+                <DataGridTextColumn 
+                    Header="№" 
+                    Width="40"
+                    Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}"
+                    ElementStyle="{StaticResource DataGridTextStyle}">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

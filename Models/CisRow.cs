@@ -2,41 +2,14 @@
 {
     public class CisRow
     {
-        public string Cis
-        {
-            get; set;
-        }
-        public string Ki
-        {
-            get; set;
-        }
-        public string Gtin
-        {
-            get; set;
-        }
-        public string Name
-        {
-            get; set;
-        }
-        public string Status
-        {
-            get; set;
-        }
-        public string Created
-        {
-            get; set;
-        }   // соответствует create
-        public string SetCode
-        {
-            get; set;
-        }   // соответствует set
-        public string Ip
-        {
-            get; set;
-        }
-        public string Inn
-        {
-            get; set;
-        }
+        public string Cis { get; set; } = string.Empty;
+        public string Ki { get; set; } = string.Empty;
+        public string Gtin { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Created { get; set; } = string.Empty;
+        public string SetCode { get; set; } = string.Empty;
+        public string Ip { get; set; } = string.Empty;
+        public string Inn { get; set; } = string.Empty;
     }
 }

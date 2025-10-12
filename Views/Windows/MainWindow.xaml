@@ -1,43 +1,132 @@
 ﻿<Window x:Class="WinUIOrderApp.Views.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:helpers="clr-namespace:WinUIOrderApp.Helpers"
+        xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
         Title="WinUIOrderApp"
         Width="1280" Height="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="#FF1F1F1F">
+
+    <Window.Resources>
+        <!-- Конвертер для отображения иконки товарной группы -->
+        <conv:ProductGroupCodeToIconConverter x:Key="ProductGroupCodeToIconConverter"/>
+
+        <!-- Цветовые ресурсы -->
+        <SolidColorBrush x:Key="BackgroundPrimary" Color="#FF1F1F1F"/>
+        <SolidColorBrush x:Key="BackgroundSecondary" Color="#FF252525"/>
+        <SolidColorBrush x:Key="BackgroundTertiary" Color="#FF2D2D2D"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#FF2196F3"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#FFB0B0B0"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#FF333333"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#FF4CAF50"/>
+
+        <!-- Стили -->
+        <Style x:Key="NavListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFB0B0B0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF2D2D2D"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF2196F3"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="128"/>
+            <ColumnDefinition Width="140"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <!-- Левая панель навигации (простая и надёжная) -->
-        <StackPanel Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <TextBlock Text="Навигация"
-                       FontSize="18"
-                       FontWeight="SemiBold"
-                       Margin="12,12,12,8"/>
+        <!-- 🔸 Левая панель навигации -->
+        <Border Grid.Column="0" 
+                Background="#FF252525"
+                BorderBrush="#FF333333"
+                BorderThickness="0,0,1,0">
+            <StackPanel>
+                <!-- Заголовок -->
+                <Image x:Name="logo4z" 
+                       Height="32" 
+                       Width="32" 
+                       Source="/Assets/logo-Checkmark.png" HorizontalAlignment="Left" Margin="10,10,0,0"/>
 
-            <ListBox x:Name="NavList"
-                     SelectionChanged="NavList_SelectionChanged"
-                     BorderThickness="0"
-                     Margin="8"
-                     HorizontalContentAlignment="Stretch">
-                <ListBoxItem Content="Главная"            Tag="DashboardPage"  Padding="12"/>
-                <ListBoxItem Content="Data"               Tag="DataPage"       Padding="12"/>
-                <ListBoxItem Content="Документы"          Tag="DocumentsPage"  Padding="12"/>
-                <ListBoxItem Content="SUZ"                Tag="SUZPage"        Padding="12"/>
-                <ListBoxItem Content="Каталог"            Tag="NationalCatalogPage" Padding="12"/>
-                <ListBoxItem Content="Поиск"              Tag="SearchPage"     Padding="12"/>
-                <ListBoxItem Content="Экспорт"            Tag="ExportsPage"    Padding="12"/>
-                <ListBoxItem Content="Настройки"          Tag="SettingsPage"   Padding="12"/>
-            </ListBox>
-        </StackPanel>
+                <!-- Навигация -->
+                <ListBox x:Name="NavList"
+                         SelectionChanged="NavList_SelectionChanged"
+                         BorderThickness="0"
+                         Margin="8,0,8,8"
+                         Background="Transparent"
+                         Foreground="#FFB0B0B0"
+                         ItemContainerStyle="{StaticResource NavListBoxItemStyle}">
 
-        <!-- Область отображения страниц -->
-        <Frame x:Name="ContentFrame"
-               Grid.Column="1"
-               NavigationUIVisibility="Hidden"
-               JournalOwnership="OwnsJournal" />
+                    <ListBoxItem Content="📊 Главная" Tag="DashboardPage"/>
+                    <ListBoxItem Content="📁 Data" Tag="DataPage"/>
+                    <ListBoxItem Content="📄 Документы" Tag="DocumentsPage"/>
+                    <ListBoxItem Content="🛡️ SUZ" Tag="SUZPage"/>
+                    <ListBoxItem Content="📦 Каталог" Tag="NationalCatalogPage"/>
+                    <ListBoxItem Content="🔍 Поиск" Tag="SearchPage"/>
+                    <ListBoxItem Content="📤 Экспорт" Tag="ExportsPage"/>
+                    <ListBoxItem Content="⚙️ Настройки" Tag="SettingsPage"/>
+                </ListBox>
+
+            </StackPanel>
+        </Border>
+
+        <!-- 🔸 Правая часть -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 🔹 Верхняя панель информации -->
+            <Border Background="#FF2D2D2D"
+                    BorderBrush="#FF333333"
+                    BorderThickness="0,0,0,1"
+                    Height="36">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="16,0,0,0">
+
+                    <TextBlock Text="Активный сертификат:"
+                               Foreground="#FFB0B0B0"
+                               Margin="0,0,8,0"
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=CertificateOwnerPublicName}"
+                               Foreground="#FF4CAF50"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+
+                    <Image Width="20"
+                           Height="20"
+                           Margin="12,0,0,0"
+                           VerticalAlignment="Center"
+                           Source="{Binding Source={x:Static helpers:AppState.Instance},
+                                            Path=SelectedProductGroupCode,
+                                            Converter={StaticResource ProductGroupCodeToIconConverter}}"
+                           ToolTip="{Binding Source={x:Static helpers:AppState.Instance}, Path=SelectedProductGroupName}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 🔹 Контент -->
+            <Frame x:Name="ContentFrame"
+                   Grid.Row="1"
+                   NavigationUIVisibility="Hidden"
+                   JournalOwnership="OwnsJournal"
+                   Background="#FF1F1F1F"/>
+        </Grid>
     </Grid>
 </Window>

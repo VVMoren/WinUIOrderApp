@@ -7,71 +7,225 @@
     xmlns:local="clr-namespace:WinUIOrderApp.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance local:SettingsPage, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Background="#FF1F1F1F"
+    Foreground="White"
     mc:Ignorable="d">
 
     <Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <conv:ProductGroupCodeToIconConverter x:Key="ProductGroupCodeToIconConverter"/>
+
+        <!-- Стили для элементов Settings -->
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF1976D2"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#FF1565C0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,0"/>
+        </Style>
+
+        <Style x:Key="ExpanderStyle" TargetType="Expander">
+            <Setter Property="Background" Value="#FF252525"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
     </Page.Resources>
 
-    <StackPanel Margin="20" Orientation="Vertical" VerticalAlignment="Top">
-        <!-- Секция выбора сертификата -->
-        <TextBlock Text="Сертификат для подключения к ГИС МТ" FontSize="16" Margin="0,0,0,10" />
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <ComboBox
-                Width="400"
-                DisplayMemberPath="Subject"
-                SelectedValuePath="Thumbprint"
-                ItemsSource="{Binding Certificates}"
-                SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" Orientation="Vertical" VerticalAlignment="Top">
 
-            <Button
-                Content="Подключиться к ГИС МТ"
-                Command="{Binding ConnectToGisMtCommand}"
-                Width="200"
-                Margin="10,0,0,0" Cursor="IBeam"/>
+            <!-- Секция выбора сертификата -->
+            <TextBlock 
+                Text="Сертификат для подключения к ГИС МТ" 
+                Style="{StaticResource SectionHeaderStyle}"/>
 
-        </StackPanel>
-
-        <!-- Товарная группа -->
-        <ComboBox ItemsSource="{Binding ProductGroups}"
-          SelectedItem="{Binding SelectedProductGroup}"
-          DisplayMemberPath="name"
-          IsSynchronizedWithCurrentItem="True">
-            <ComboBox.ItemContainerStyle>
-                <Style TargetType="ComboBoxItem">
-                    <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
-                </Style>
-            </ComboBox.ItemContainerStyle>
-        </ComboBox>
-
-
-
-        <!-- Заголовок "Настройки" -->
-        <TextBlock Text="Настройки:" FontSize="16" FontWeight="Bold" Margin="0,20,0,10"/>
-
-        <!-- Expander для лог-файла -->
-        <Expander Header="..." IsExpanded="True">
-            <StackPanel Margin="10,5,0,0">
-                <TextBlock Text="Путь хранения лог-файла:" FontWeight="SemiBold" />
-                <TextBox
-                    Text="{Binding LogFilePath, Mode=OneWay}"
-                    IsReadOnly="True"
-                    Background="WhiteSmoke"
-                    Margin="0,5,0,10"
-                    Height="33" FontSize="10" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <ComboBox 
+                    Width="400"
+                    Style="{StaticResource ComboBoxStyle}"
+                    ItemsSource="{Binding Certificates}"
+                    SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" Foreground="Black">
+                    <ComboBox.OpacityMask>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black"/>
+                            <GradientStop Color="#FF635E5E" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.OpacityMask>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                                Text="{Binding SubjectName.Name}" 
+                                Foreground="Black"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <Button
-                    Content="Выбрать"
-                    Command="{Binding SelectLogFilePathCommand}"
-                    Width="150"
-                    Height="30" />
+                    Content="Подключиться к ГИС МТ"
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding ConnectToGisMtCommand}"
+                    Width="147"
+                    Margin="12,0,0,0" Background="#FFF6F42E" Foreground="Black"/>
             </StackPanel>
-        </Expander>
-    </StackPanel>
+
+            <!-- Информация о сертификате -->
+            <Border 
+                Background="#FF2D2D2D"
+                BorderBrush="#FF333333"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="12,8"
+                Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock 
+                        Text="Активный сертификат:"
+                        Foreground="#FFB0B0B0"
+                        VerticalAlignment="Center"
+                        Margin="0,0,8,0"/>
+
+                    <TextBlock 
+                        Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=CertificateOwnerPublicName}"
+                        FontWeight="SemiBold" 
+                        FontSize="14" 
+                        Foreground="#FF4CAF50"
+                        VerticalAlignment="Center"/>
+
+                    <Image 
+                        Width="20" 
+                        Height="20" 
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        Source="{Binding Source={x:Static helpers:AppState.Instance},
+                                        Path=SelectedProductGroupCode,
+                                        Converter={StaticResource ProductGroupCodeToIconConverter}}"
+                        ToolTip="{Binding Source={x:Static helpers:AppState.Instance}, Path=SelectedProductGroupName}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Товарная группа -->
+            <TextBlock 
+                Text="Товарная группа:"
+                Foreground="#FFB0B0B0"
+                Margin="0,0,0,6"
+                FontWeight="SemiBold"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <Border Background="#FF2D2D2D"
+                    BorderBrush="#FF333333"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="12,8"
+                    VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Width="20" 
+                                   Height="20" 
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center"
+                                   Source="{Binding Source={x:Static helpers:AppState.Instance},Path=SelectedProductGroupCode,Converter={StaticResource ProductGroupCodeToIconConverter}}"/>
+                        <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=SelectedProductGroupName}"
+                                       FontWeight="SemiBold" 
+                                       FontSize="14" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       MinWidth="200"/>
+                    </StackPanel>
+                </Border>
+
+                <Button 
+                    Content="Выбрать группу"
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding OpenProductGroupSelectionCommand}"
+                    Width="120"
+                    Margin="12,0,0,0" 
+                    Background="#FFF6F42E" 
+                    Foreground="Black"/>
+            </StackPanel>
+
+            <!-- Заголовок "Настройки" -->
+            <TextBlock 
+                Text="Настройки" 
+                Style="{StaticResource SectionHeaderStyle}"
+                FontSize="18"/>
+
+            <!-- Expander для лог-файла -->
+            <Expander 
+                Header="📝 Настройки лог-файла" 
+                Style="{StaticResource ExpanderStyle}"
+                IsExpanded="True">
+                <StackPanel Margin="12,8,12,12">
+                    <TextBlock 
+                        Text="Путь хранения лог-файла:" 
+                        FontWeight="SemiBold" 
+                        Foreground="#FFB0B0B0" 
+                        Margin="0,0,0,6"/>
+
+                    <TextBox
+                        Style="{StaticResource TextBoxStyle}"
+                        Text="{Binding LogFilePath, Mode=OneWay}"
+                        IsReadOnly="True"
+                        FontFamily="Consolas"
+                        Margin="0,0,0,12"/>
+
+                    <Button
+                        Content="Выбрать папку"
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding SelectLogFilePathCommand}"
+                        Width="107" Background="#FFF6F42E" Foreground="Black" Height="23"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- Дополнительные настройки -->
+            <Expander 
+                Header="⚙️ Дополнительные настройки" 
+                Style="{StaticResource ExpanderStyle}"
+                IsExpanded="False">
+                <StackPanel Margin="12,8,12,12">
+                    <TextBlock 
+                        Text="Здесь могут быть дополнительные настройки приложения..." 
+                        Foreground="#FFB0B0B0"
+                        FontStyle="Italic"/>
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>

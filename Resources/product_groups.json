@@ -101,7 +101,7 @@
       },
       {
          "id": 11,
-         "name": "Слабоалкогольные напитки",
+         "name": "Алкоголь",
          "code": "alcohol",
          "url": null,
          "startDate": null,
@@ -232,6 +232,17 @@
          "farmer": false
       },
       {
+         "id": 25,
+         "name": "Мясо",
+         "code": "meat",
+         "url": null,
+         "startDate": null,
+         "description": null,
+         "productGroupStatus": "EXPERIMENT",
+         "tnvedDtoSet": [],
+         "farmer": false
+      },
+      {
          "id": 26,
          "name": "Ветеринарные препараты",
          "code": "vetpharma",
@@ -310,7 +321,7 @@
       },
       {
          "id": 35,
-         "name": "Парфюмерные и косметические средства и бытовая химия",
+         "name": "Косметика, бытовая химия и товары личной гигиены",
          "code": "chemistry",
          "url": null,
          "startDate": null,
@@ -359,7 +370,7 @@
          "url": null,
          "startDate": null,
          "description": null,
-         "productGroupStatus": "EXPERIMENT",
+         "productGroupStatus": "COMMERCIAL",
          "tnvedDtoSet": [],
          "farmer": false
       },
@@ -403,7 +414,7 @@
          "url": null,
          "startDate": null,
          "description": null,
-         "productGroupStatus": "EXPERIMENT",
+         "productGroupStatus": "COMMERCIAL",
          "tnvedDtoSet": [],
          "farmer": false
       },
@@ -439,7 +450,40 @@
          "productGroupStatus": "EXPERIMENT",
          "tnvedDtoSet": [],
          "farmer": false
+      },
+      {
+         "id": 50,
+         "name": "Радиоэлектронная продукция. Электронные системы доставки никотина",
+         "code": "nicotindev",
+         "url": null,
+         "startDate": null,
+         "description": null,
+         "productGroupStatus": "EXPERIMENT",
+         "tnvedDtoSet": [],
+         "farmer": false
+      },
+      {
+         "id": 51,
+         "name": "Ноутбуки и смартфоны",
+         "code": "gadgets",
+         "url": null,
+         "startDate": null,
+         "description": null,
+         "productGroupStatus": "EXPERIMENT",
+         "tnvedDtoSet": [],
+         "farmer": false
+      },
+      {
+         "id": 55,
+         "name": "Кормовые добавки",
+         "code": "vetbio",
+         "url": null,
+         "startDate": null,
+         "description": null,
+         "productGroupStatus": "EXPERIMENT",
+         "tnvedDtoSet": [],
+         "farmer": false
       }
    ],
-   "total": 40
+   "total": 44
 }

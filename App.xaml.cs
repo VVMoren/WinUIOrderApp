@@ -22,19 +22,23 @@ namespace WinUIOrderApp
             base.OnStartup(e);
 
             // 📌 Путь к исходному файлу iDB.txt
-            string sourceTxt = @"X:\1code_all order\DB\iDB.txt"; // file-txt
+        //  string sourceTxt = @"X:\1code_all order\DB\iDB.txt"; // file-txt
 
             // 📝 Проверяем, есть ли база. Если нет — создаём.
-            AppDbInitializer.EnsureDatabase(sourceTxt);
+        //  AppDbInitializer.EnsureDatabase(sourceTxt);
 
             _host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, services) =>
             {
+                // --- ViewModels (регистрируем те, что используются в Page constructors) ---
                 services.AddSingleton<DashboardViewModel>();
-                services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
             
-                // Регистрация всех страниц
+                // страницы часто используют ViewModel'ы — регистрируем их тоже
+                services.AddSingleton<DataViewModel>();
+                services.AddSingleton<SettingsViewModel>();
+            
+                // --- Pages ---
                 services.AddSingleton<DashboardPage>();
                 services.AddSingleton<DataPage>();
                 services.AddSingleton<DocumentsPage>();
@@ -43,13 +47,14 @@ namespace WinUIOrderApp
                 services.AddSingleton<SearchPage>();
                 services.AddSingleton<ExportsPage>();
                 services.AddSingleton<SettingsPage>();
+            
+                // --- Main window and window VM ---
+                services.AddSingleton<MainWindow>();
+                // MainWindowViewModel уже зарегистрирован выше
             })
+
             .Build();
             _host.Start();
-
-            var dbPath = AppDbConfig.DbPath;
-            DbUtils.EnsureIndexes(dbPath);
-
 
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
             mainWindow.DataContext = _host.Services.GetRequiredService<MainWindowViewModel>();

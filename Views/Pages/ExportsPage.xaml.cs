@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace WinUIOrderApp.Views.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для ExportsPage.xaml
-    /// </summary>
     public partial class ExportsPage : Page
     {
         public ExportsPage()

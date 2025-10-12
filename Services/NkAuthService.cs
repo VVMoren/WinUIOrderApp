@@ -93,7 +93,7 @@ namespace WinUIOrderApp.Services
 
                 // Упрощаем команду - убираем chcp 1251, так как cryptcp работает с бинарными данными
               //string cmdArgs = $"/c \"{exePath}\" -sign -dn \"CN={REQUIRED_CN}\" -detached -der \"{dataPath}\" \"{signPath}\"";
-                string cmdArgs = $"/c chcp 1251 > nul && \"{exePath}\" -sign -dn \"CN={REQUIRED_CN}\" \"{dataPath}\" \"{signPath}\"";
+                string cmdArgs = $"/c chcp 1251 > nul && \"{exePath}\" -sign -dn \"CN={REQUIRED_CN}\" -nochain \"{dataPath}\" \"{signPath}\"";
 
 
                 var process = new Process

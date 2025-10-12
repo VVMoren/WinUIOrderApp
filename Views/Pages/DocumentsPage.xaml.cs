@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using WinUIOrderApp.Helpers;
 using WinUIOrderApp.Models;
 
@@ -45,7 +46,8 @@ namespace WinUIOrderApp.Views.Pages
             catch (Exception ex)
             {
                 LogHelper.WriteLog("DocumentsPage_Loaded", $"Ошибка при загрузке документов: {ex.Message}");
-                MessageBox.Show($"Ошибка при загрузке документов: {ex.Message}");
+                MessageBox.Show($"Ошибка при загрузке документов: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -83,6 +85,7 @@ namespace WinUIOrderApp.Views.Pages
             LogHelper.WriteLog("FilterDocuments", $"Найдено документов после фильтрации: {filtered.Count}");
             PopulateDocumentsGroupedByMonth(filtered);
         }
+
         private void LoadDictionaries()
         {
             try
@@ -91,21 +94,14 @@ namespace WinUIOrderApp.Views.Pages
                 _documentTypes = DictionaryHelper.Load("Resources/document_types.json");
                 _documentStatuses = DictionaryHelper.Load("Resources/document_statuses.json");
 
-                // Логируем примеры ключей из словарей для отладки
-                var typeKeys = _documentTypes.Keys.Take(5).ToList();
-                var statusKeys = _documentStatuses.Keys.Take(5).ToList();
-
                 LogHelper.WriteLog("LoadDictionaries",
                     $"Загружено типов документов: {_documentTypes.Count}, статусов: {_documentStatuses.Count}");
-                LogHelper.WriteLog("LoadDictionaries",
-                    $"Примеры типов: {string.Join(", ", typeKeys)}");
-                LogHelper.WriteLog("LoadDictionaries",
-                    $"Примеры статусов: {string.Join(", ", statusKeys)}");
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("LoadDictionaries", $"Ошибка загрузки словарей: {ex.Message}");
-                MessageBox.Show($"Ошибка загрузки словарей: {ex.Message}");
+                MessageBox.Show($"Ошибка загрузки словарей: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -140,11 +136,7 @@ namespace WinUIOrderApp.Views.Pages
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
-
-                // Логируем первые 200 символов JSON для отладки
-                var jsonPreview = json.Length > 200 ? json.Substring(0, 200) + "..." : json;
-                LogHelper.WriteLog("FetchDocumentsAsync",
-                    $"Данные получены, длина JSON: {json.Length} символов, превью: {jsonPreview}");
+                LogHelper.WriteLog("FetchDocumentsAsync", $"Данные получены, длина JSON: {json.Length} символов");
 
                 var data = JsonSerializer.Deserialize<DocumentResponse>(json, new JsonSerializerOptions
                 {
@@ -154,21 +146,10 @@ namespace WinUIOrderApp.Views.Pages
                 var documents = data?.Results ?? new List<DocumentDto>();
                 LogHelper.WriteLog("FetchDocumentsAsync", $"Десериализовано документов: {documents.Count}");
 
-                // Логируем первые несколько документов для отладки
-                if (documents.Count > 0)
-                {
-                    var sampleDocs = documents.Take(3).Select(d =>
-                        $"№{d.Number}, тип: {d.Type}, статус: {d.Status}, от: {d.SenderName}").ToList();
-
-                    LogHelper.WriteLog("FetchDocumentsAsync",
-                        $"Примеры документов: {string.Join("; ", sampleDocs)}");
-                }
-
                 // Преобразование типов и статусов
                 int convertedTypes = 0;
                 int convertedStatuses = 0;
                 int convertedDates = 0;
-                var conversionErrors = new List<string>();
 
                 foreach (var doc in documents)
                 {
@@ -179,19 +160,11 @@ namespace WinUIOrderApp.Views.Pages
                             doc.Type = typeName;
                             convertedTypes++;
                         }
-                        else if (!string.IsNullOrEmpty(doc.Type))
-                        {
-                            conversionErrors.Add($"Тип не найден: {doc.Type}");
-                        }
 
                         if (!string.IsNullOrEmpty(doc.Status) && _documentStatuses.TryGetValue(doc.Status, out var statusName))
                         {
                             doc.Status = statusName;
                             convertedStatuses++;
-                        }
-                        else if (!string.IsNullOrEmpty(doc.Status))
-                        {
-                            conversionErrors.Add($"Статус не найден: {doc.Status}");
                         }
 
                         if (DateTime.TryParse(doc.ReceivedAt, out var parsed))
@@ -209,12 +182,6 @@ namespace WinUIOrderApp.Views.Pages
 
                 LogHelper.WriteLog("FetchDocumentsAsync",
                     $"Преобразовано: типов - {convertedTypes}, статусов - {convertedStatuses}, дат - {convertedDates}");
-
-                if (conversionErrors.Count > 0)
-                {
-                    LogHelper.WriteLog("FetchDocumentsAsync",
-                        $"Ошибки преобразования: {string.Join("; ", conversionErrors.Take(5))}");
-                }
 
                 return documents;
             }
@@ -260,8 +227,8 @@ namespace WinUIOrderApp.Views.Pages
                 var expander = new Expander
                 {
                     Header = group.Key,
-                    Margin = new Thickness(0, 5, 0, 5),
-                    IsExpanded = true,
+                    Style = (Style)FindResource("DarkExpanderStyle"),
+                    IsExpanded = totalExpanders < 3, // Раскрываем первые 3 месяца
                     Content = CreateDocumentList(group.ToList())
                 };
 
@@ -274,6 +241,22 @@ namespace WinUIOrderApp.Views.Pages
 
             LogHelper.WriteLog("PopulateDocumentsGroupedByMonth",
                 $"Добавлено всего Expander'ов: {totalExpanders}");
+
+            // Если документов нет, показываем сообщение
+            if (totalExpanders == 0)
+            {
+                var noDataText = new TextBlock
+                {
+                    Text = "Документы не найдены",
+                    Foreground = new SolidColorBrush(Color.FromRgb(0xB0, 0xB0, 0xB0)),
+                    FontSize = 16,
+                    FontStyle = FontStyles.Italic,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 20, 0, 0)
+                };
+                MonthsPanel.Children.Add(noDataText);
+            }
         }
 
         private UIElement CreateDocumentList(List<DocumentDto> docs)
@@ -282,19 +265,57 @@ namespace WinUIOrderApp.Views.Pages
 
             var grid = new DataGrid
             {
+                Style = (Style)FindResource("DarkDataGridStyle"),
                 AutoGenerateColumns = false,
                 IsReadOnly = true,
-                Height = 200,
+                Height = Math.Min(400, docs.Count * 30 + 40), // Адаптивная высота
+                MaxHeight = 600,
                 Margin = new Thickness(0, 5, 0, 5),
                 ItemsSource = docs
             };
 
-            grid.Columns.Add(new DataGridTextColumn { Header = "Получен", Binding = new System.Windows.Data.Binding("ReceivedAt") });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Документ", Binding = new System.Windows.Data.Binding("Type") });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Номер", Binding = new System.Windows.Data.Binding("Number") });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Отправитель", Binding = new System.Windows.Data.Binding("SenderName") });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Получатель", Binding = new System.Windows.Data.Binding("ReceiverName") });
-            grid.Columns.Add(new DataGridTextColumn { Header = "Статус", Binding = new System.Windows.Data.Binding("Status") });
+            // Настраиваем стили для колонок и ячеек
+            grid.ColumnHeaderStyle = (Style)FindResource("DarkDataGridColumnHeaderStyle");
+            grid.CellStyle = (Style)FindResource("DarkDataGridCellStyle");
+            grid.RowStyle = (Style)FindResource("DarkDataGridRowStyle");
+
+            // Добавляем колонки
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Получен",
+                Binding = new System.Windows.Data.Binding("ReceivedAt"),
+                Width = new DataGridLength(1.2, DataGridLengthUnitType.Star)
+            });
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Документ",
+                Binding = new System.Windows.Data.Binding("Type"),
+                Width = new DataGridLength(1.5, DataGridLengthUnitType.Star)
+            });
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Номер",
+                Binding = new System.Windows.Data.Binding("Number"),
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
+            });
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Отправитель",
+                Binding = new System.Windows.Data.Binding("SenderName"),
+                Width = new DataGridLength(2, DataGridLengthUnitType.Star)
+            });
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Получатель",
+                Binding = new System.Windows.Data.Binding("ReceiverName"),
+                Width = new DataGridLength(2, DataGridLengthUnitType.Star)
+            });
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Статус",
+                Binding = new System.Windows.Data.Binding("Status"),
+                Width = new DataGridLength(1.2, DataGridLengthUnitType.Star)
+            });
 
             LogHelper.WriteLog("CreateDocumentList", "DataGrid создан с 6 колонками");
 
@@ -305,21 +326,57 @@ namespace WinUIOrderApp.Views.Pages
     public class DocumentResponse
     {
         public List<DocumentDto> Results { get; set; } = new();
-        public bool NextPage { get; set; }
+        public bool NextPage
+        {
+            get; set;
+        }
     }
 
     public class DocumentDto
     {
-        public string Number { get; set; }
-        public string DocDate { get; set; }
-        public string ReceivedAt { get; set; }
-        public string Type { get; set; }
-        public string Status { get; set; }
-        public string SenderInn { get; set; }
-        public string SenderName { get; set; }
-        public string ReceiverInn { get; set; }
-        public string ReceiverName { get; set; }
-        public string DownloadDesc { get; set; }
-        public string ProductGroup { get; set; }
+        public string Number
+        {
+            get; set;
+        }
+        public string DocDate
+        {
+            get; set;
+        }
+        public string ReceivedAt
+        {
+            get; set;
+        }
+        public string Type
+        {
+            get; set;
+        }
+        public string Status
+        {
+            get; set;
+        }
+        public string SenderInn
+        {
+            get; set;
+        }
+        public string SenderName
+        {
+            get; set;
+        }
+        public string ReceiverInn
+        {
+            get; set;
+        }
+        public string ReceiverName
+        {
+            get; set;
+        }
+        public string DownloadDesc
+        {
+            get; set;
+        }
+        public string ProductGroup
+        {
+            get; set;
+        }
     }
 }

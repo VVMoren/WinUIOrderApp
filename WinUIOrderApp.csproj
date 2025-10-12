@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>wpfui-icon.ico</ApplicationIcon>
     <UseWPF>true</UseWPF>
@@ -16,14 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- System dependency (оставь, если используешь SignedCms или Pkcs#7 из BCL) -->
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0-rc.1.25451.107" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3530-prerelease" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
+    <PackageReference Include="EPPlus" Version="8.2.1" />
+    <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0-rc.1.25451.107" />
-  
+    
+
     <!-- UI & DI -->
     <PackageReference Include="WPF-UI" Version="4.0.3" />
     <PackageReference Include="WPF-UI.Abstractions" Version="4.0.3" />
@@ -41,12 +41,13 @@
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </EmbeddedResource>
   <Content Include="Resources\Tools\cryptcp.win32.exe">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
 
 
   <ItemGroup>
+    <None Remove="Assets\logo-Checkmark.png" />
     <None Remove="Assets\wpfui-icon-256.png" />
     <None Remove="Assets\wpfui-icon-1024.png" />
     <None Remove="Resources\AGG\products_dict.json" />
@@ -54,6 +55,45 @@
     <None Remove="Resources\document_statuses.json" />
     <None Remove="Resources\document_types.json" />
     <None Remove="Resources\emission_types.json" />
+    <None Remove="Resources\icon\product_groups\alcohol.png" />
+    <None Remove="Resources\icon\product_groups\autofluids.png" />
+    <None Remove="Resources\icon\product_groups\beer.png" />
+    <None Remove="Resources\icon\product_groups\bicycle.png" />
+    <None Remove="Resources\icon\product_groups\books.png" />
+    <None Remove="Resources\icon\product_groups\cableraw.png" />
+    <None Remove="Resources\icon\product_groups\carparts.png" />
+    <None Remove="Resources\icon\product_groups\chemistry.png" />
+    <None Remove="Resources\icon\product_groups\conserve.png" />
+    <None Remove="Resources\icon\product_groups\construction.png" />
+    <None Remove="Resources\icon\product_groups\electronics.png" />
+    <None Remove="Resources\icon\product_groups\fire.png" />
+    <None Remove="Resources\icon\product_groups\furs.png" />
+    <None Remove="Resources\icon\product_groups\heater.png" />
+    <None Remove="Resources\icon\product_groups\left.png" />
+    <None Remove="Resources\icon\product_groups\lp.png" />
+    <None Remove="Resources\icon\product_groups\meat.png" />
+    <None Remove="Resources\icon\product_groups\milk.png" />
+    <None Remove="Resources\icon\product_groups\ncp.png" />
+    <None Remove="Resources\icon\product_groups\nicotindev.png" />
+    <None Remove="Resources\icon\product_groups\opticfiber.png" />
+    <None Remove="Resources\icon\product_groups\otp.png" />
+    <None Remove="Resources\icon\product_groups\perfumery.png" />
+    <None Remove="Resources\icon\product_groups\petfood.png" />
+    <None Remove="Resources\icon\product_groups\pharmaraw.png" />
+    <None Remove="Resources\icon\product_groups\polymer.png" />
+    <None Remove="Resources\icon\product_groups\radio.png" />
+    <None Remove="Resources\icon\product_groups\seafood.png" />
+    <None Remove="Resources\icon\product_groups\shoes.png" />
+    <None Remove="Resources\icon\product_groups\softdrinks.png" />
+    <None Remove="Resources\icon\product_groups\sweets.png" />
+    <None Remove="Resources\icon\product_groups\tires.png" />
+    <None Remove="Resources\icon\product_groups\titan.png" />
+    <None Remove="Resources\icon\product_groups\tobacco.png" />
+    <None Remove="Resources\icon\product_groups\toys.png" />
+    <None Remove="Resources\icon\product_groups\vegetableoil.png" />
+    <None Remove="Resources\icon\product_groups\vetpharma.png" />
+    <None Remove="Resources\icon\product_groups\water.png" />
+    <None Remove="Resources\icon\product_groups\wheelchairs.png" />
     <None Remove="Resources\order_statuses.json" />
     <None Remove="Resources\package_types.json" />
     <None Remove="Resources\production_types.json" />
@@ -63,6 +103,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\logo-Checkmark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\wpfui-icon-256.png" />
     <Resource Include="Assets\wpfui-icon-1024.png" />
     <EmbeddedResource Include="Resources\cis_statuses.json">
@@ -75,6 +118,123 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\emission_types.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\alcohol.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\autofluids.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\beer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\bicycle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\books.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\cableraw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\carparts.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\chemistry.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\conserve.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\construction.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\electronics.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\fire.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\furs.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\heater.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\left.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\lp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\meat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\milk.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\ncp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\nicotindev.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\opticfiber.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\otp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\perfumery.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\petfood.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\pharmaraw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\polymer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\radio.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\seafood.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\shoes.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\softdrinks.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\sweets.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\tires.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\titan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\tobacco.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\toys.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\vegetableoil.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\vetpharma.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\water.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon\product_groups\wheelchairs.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="Resources\order_statuses.json">
@@ -98,6 +258,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CryptoPro.Security.Cryptography">
+      <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="CryptoPro.Security.Cryptography.Pkcs">
+      <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.Pkcs.dll</HintPath>
+    </Reference>
     <Reference Include="dotnetcades">
       <HintPath>H:\Загрузки\dotnetcades-main\dotnetcades-main\dotnetcades\bin\Debug\netstandard2.0\dotnetcades.dll</HintPath>
     </Reference>

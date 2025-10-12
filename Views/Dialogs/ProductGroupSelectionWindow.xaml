@@ -1,0 +1,192 @@
+﻿<Window x:Class="WinUIOrderApp.Views.Windows.ProductGroupSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
+        mc:Ignorable="d"
+        Title="Выбор товарной группы"
+        Height="600"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#FF1F1F1F"
+        Foreground="White"
+        WindowStyle="None" 
+    AllowsTransparency="True"
+        BorderThickness="1"
+        BorderBrush="#FF333333">
+
+    <Window.Resources>
+        <conv:ProductGroupCodeToIconConverter x:Key="ProductGroupCodeToIconConverter"/>
+
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border 
+                            x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF6F42E"/>
+                    <!-- Желтый фон при наведении -->
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Setter Property="BorderBrush" Value="#FF555555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для текста внутри кнопки -->
+        <Style x:Key="ButtonTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="MaxWidth" Value="90"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}" Value="False">
+                    <Setter Property="Foreground" Value="#FF888888"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <!-- Черный текст при наведении -->
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="ProductGroupTemplate">
+            <Button
+                Style="{StaticResource IconButtonStyle}"
+                Command="{Binding DataContext.SelectProductGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                CommandParameter="{Binding}"
+                IsEnabled="{Binding IsEnabled}">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image 
+                        Width="48" 
+                        Height="48" 
+                        Source="{Binding code, Converter={StaticResource ProductGroupCodeToIconConverter}}"
+                        Margin="0,0,0,8"/>
+                    <TextBlock 
+                        Text="{Binding name}" 
+                        Style="{StaticResource ButtonTextStyle}"/>
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Кастомная шапка окна -->
+        <Border Grid.Row="0" 
+                Background="#FF252525" 
+                BorderBrush="#FF333333" 
+                BorderThickness="0,0,0,1"
+                Height="40">
+            <Grid>
+                <TextBlock 
+                    Text="Выберите товарную группу"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="White"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+
+                <!-- Кнопка закрытия окна -->
+                <Button 
+                    Content="✕"
+                    Width="30"
+                    Height="30"
+                    Background="Transparent"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="12"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,10,0"
+                    Click="CloseButton_Click"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFE81123"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Контейнер для иконок -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20">
+            <ItemsControl 
+                ItemsSource="{Binding ProductGroups}"
+                ItemTemplate="{StaticResource ProductGroupTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Кнопка закрытия внизу -->
+        <Border Grid.Row="2" 
+                Background="#FF252525" 
+                BorderBrush="#FF333333" 
+                BorderThickness="0,1,0,0"
+                Padding="10">
+            <Button 
+                Content="Закрыть"
+                Width="100"
+                Height="30"
+                Background="#FFF6F42E"
+                Foreground="Black"
+                BorderThickness="0"
+                Click="CloseButton_Click"
+                HorizontalAlignment="Center"
+                Cursor="Hand" FontWeight="Bold">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#FF555555"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF666666"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Border>
+    </Grid>
+</Window>
