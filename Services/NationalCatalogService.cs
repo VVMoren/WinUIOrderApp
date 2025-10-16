@@ -14,7 +14,7 @@ namespace WinUIOrderApp.Services
 {
     public class NationalCatalogService
     {
-        private const int ProductListPageSize = 200;
+        private const int ProductListPageSize = 1000;
         private const int ProductInfoBatchSize = 50;
         private static readonly string FromDate = Uri.EscapeDataString("2000-01-01 00:00:00");
         private static readonly string ToDate = Uri.EscapeDataString("2026-10-16 23:59:59");
