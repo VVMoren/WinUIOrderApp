@@ -1,14 +1,352 @@
 ﻿<Page x:Class="WinUIOrderApp.Views.Pages.ExportsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WinUIOrderApp.Views.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="ExportsPage">
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      Title="ExportsPage"
+      Background="#FF1F1F1F"
+      Foreground="White">
 
-    <Grid>
-        
+    <Page.Resources>
+        <!-- Цветовые ресурсы -->
+        <SolidColorBrush x:Key="BackgroundPrimary" Color="#FF1F1F1F"/>
+        <SolidColorBrush x:Key="BackgroundSecondary" Color="#FF252525"/>
+        <SolidColorBrush x:Key="BackgroundTertiary" Color="#FF2D2D2D"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#FF2196F3"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#FFB0B0B0"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#FF333333"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#FF4CAF50"/>
+        <SolidColorBrush x:Key="WarningYellow" Color="#FFFFC107"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#FFDC3545"/>
+
+        <!-- Стили -->
+        <Style x:Key="CenteredCellStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{StaticResource AccentBlue}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="32"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF1976D2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="TabControlStyle" TargetType="TabControl">
+            <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="TabItemStyle" TargetType="TabItem">
+            <Setter Property="Background" Value="{StaticResource BackgroundTertiary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CheckBoxListStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="MaxHeight" Value="150"/>
+        </Style>
+
+        <Style x:Key="CheckBoxListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" 
+                                  Foreground="White" Margin="2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="KmDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="{StaticResource BackgroundSecondary}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource BackgroundTertiary}"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource BackgroundTertiary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentBlue}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="12" Background="{StaticResource BackgroundPrimary}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Панель статуса токена -->
+        <Border Grid.Row="0" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Статус токена:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TokenStatusText" Text="Не получен" Foreground="{StaticResource DangerRed}" 
+                          FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock x:Name="AutoTokenStatus" Text="Автотокен: неактивен" Foreground="{StaticResource TextSecondary}" 
+                          Margin="16,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Вкладки -->
+        <TabControl Grid.Row="1" Style="{StaticResource TabControlStyle}">
+
+            <!-- Вкладка КМ -->
+            <TabItem Header="КМ" Style="{StaticResource TabItemStyle}" Foreground="Black">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Настройки параметров КМ -->
+                    <Border Grid.Row="0" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                            BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Параметры получения КМ" Style="{StaticResource SectionHeaderStyle}" FontSize="14"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Статусы КМ:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <ListBox x:Name="CisStatusListBox" Style="{StaticResource CheckBoxListStyle}" 
+                                         ItemContainerStyle="{StaticResource CheckBoxListItemStyle}"
+                                         SelectionMode="Multiple" Width="300"/>
+                            </StackPanel>
+                            <Button x:Name="GetKmDataButton" Content="📥 Получить данные КМ" Click="GetKmDataButton_Click" 
+                                    Style="{StaticResource ActionButtonStyle}" Margin="0,12,0,0" Background="#FFF6F42E" Foreground="#FF060000"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Прогресс-бар для КМ -->
+                    <Border Grid.Row="1" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                            BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock x:Name="KmProgressText" Text="Готов к получению данных" Foreground="{StaticResource TextSecondary}"/>
+                            <ProgressBar x:Name="KmProgressBar" Minimum="0" Maximum="100" Value="0" Height="20" 
+                                       Foreground="{StaticResource AccentBlue}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Сводная статистика -->
+                    <Border Grid.Row="2" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                            BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Всего кодов:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TotalCodesText" Text="0" Foreground="White" FontWeight="SemiBold" Margin="8,0,20,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Уникальных GTIN:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="UniqueGtinText" Text="0" Foreground="White" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Таблица с результатами КМ -->
+                    <Border Grid.Row="3" Background="{StaticResource BackgroundSecondary}" BorderBrush="{StaticResource BorderLight}" 
+                            BorderThickness="1" CornerRadius="4" Padding="8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <DataGrid x:Name="KmDataGrid" Style="{StaticResource KmDataGridStyle}" Foreground="#FF797979">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="КМ" Binding="{Binding Cis}" Width="*"
+                                                        HeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Padding" Value="4,2"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}"/>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Статус выполнения -->
+                    <StatusBar Grid.Row="4" Background="{StaticResource BackgroundTertiary}" Foreground="White" 
+                               BorderBrush="{StaticResource BorderLight}" BorderThickness="1,1,0,0" Height="28" Margin="0,8,0,0">
+                        <StatusBarItem>
+                            <TextBlock x:Name="KmStatusText" Text="Готов к работе" Foreground="White"/>
+                        </StatusBarItem>
+                    </StatusBar>
+                </Grid>
+            </TabItem>
+
+            <!-- Вкладка УПД -->
+            <!-- Вкладка УПД -->
+            <TabItem Header="УПД" Style="{StaticResource TabItemStyle}" Foreground="Black">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Настройки параметров УПД -->
+                    <Border Grid.Row="0" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Параметры получения УПД" Style="{StaticResource SectionHeaderStyle}" FontSize="14"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Тип документов:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <RadioButton x:Name="UpdOutgoingRadio" Content="Исходящие" GroupName="UpdType" IsChecked="True" 
+                                Foreground="White" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                <RadioButton x:Name="UpdIncomingRadio" Content="Входящие" GroupName="UpdType" 
+                                Foreground="White" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Статус документов:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <ComboBox x:Name="UpdStatusComboBox" Width="200" Height="28" 
+                             Background="{StaticResource BackgroundSecondary}" Foreground="Black"
+                             BorderBrush="{StaticResource BorderLight}"/>
+                            </StackPanel>
+
+                            <Button x:Name="GetUpdDataButton" Content="📄 Получить УПД" Click="GetUpdDataButton_Click" 
+                        Style="{StaticResource ActionButtonStyle}" Margin="0,12,0,0" Background="#FFF6F42E" Foreground="Black"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Прогресс-бар для УПД -->
+                    <Border Grid.Row="1" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock x:Name="UpdProgressText" Text="Готов к получению УПД" Foreground="{StaticResource TextSecondary}"/>
+                            <ProgressBar x:Name="UpdProgressBar" Minimum="0" Maximum="100" Value="0" Height="20" 
+                           Foreground="{StaticResource SuccessGreen}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Сводная статистика УПД -->
+                    <Border Grid.Row="2" Background="{StaticResource BackgroundTertiary}" BorderBrush="{StaticResource BorderLight}" 
+                BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Обработано документов:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TotalDocsText" Text="0" Foreground="White" FontWeight="SemiBold" Margin="8,0,20,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Новых КМ:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="NewCisText" Text="0" Foreground="White" FontWeight="SemiBold" Margin="8,0,20,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Всего КМ:" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TotalCisText" Text="0" Foreground="White" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Таблица с результатами УПД -->
+                    <Border Grid.Row="3" Background="{StaticResource BackgroundSecondary}" BorderBrush="{StaticResource BorderLight}" 
+                BorderThickness="1" CornerRadius="4" Padding="8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <DataGrid x:Name="UpdDataGrid" Style="{StaticResource KmDataGridStyle}" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="КМ" Binding="{Binding Cis}" Width="200"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
+                                    <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" Width="300"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
+                                    <DataGridTextColumn Header="Контрагент" Binding="{Binding Counterparty}" Width="250"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
+                                    <DataGridTextColumn Header="№ УПД" Binding="{Binding DocumentNumber}" Width="150"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
+                                </DataGrid.Columns>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}"/>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Статус выполнения УПД -->
+                    <StatusBar Grid.Row="4" Background="{StaticResource BackgroundTertiary}" Foreground="White" 
+                   BorderBrush="{StaticResource BorderLight}" BorderThickness="1,1,0,0" Height="28" Margin="0,8,0,0">
+                        <StatusBarItem>
+                            <TextBlock x:Name="UpdStatusText" Text="Готов к работе" Foreground="White"/>
+                        </StatusBarItem>
+                    </StatusBar>
+                </Grid>
+            </TabItem>
+
+            <!-- Вкладка ЭДО -->
+            <TabItem Header="ЭДО" Style="{StaticResource TabItemStyle}">
+                <Grid>
+                    <TextBlock Text="Вкладка ЭДО в разработке" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondary}" FontSize="16"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Общий статус бар -->
+        <StatusBar Grid.Row="2" Background="{StaticResource BackgroundTertiary}" Foreground="White" 
+                   BorderBrush="{StaticResource BorderLight}" BorderThickness="1,1,0,0" Height="28" Margin="0,8,0,0">
+            <StatusBarItem>
+                <TextBlock x:Name="GlobalStatusText" Text="Готов к работе" Foreground="White"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Page>

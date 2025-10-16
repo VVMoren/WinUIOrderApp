@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace WinUIOrderApp.Views.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для NationalCatalogPage.xaml
-    /// </summary>
     public partial class NationalCatalogPage : Page
     {
         public NationalCatalogPage()
