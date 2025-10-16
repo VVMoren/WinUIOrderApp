@@ -84,7 +84,7 @@
                     IsEnabled="{Binding IsNotLoading}"
                     Margin="24,0,0,0"
                     Padding="18,6"
-                    HorizontalAlignment="Left"/>
+                    HorizontalAlignment="Left" Background="#FFF6F42E" FontWeight="Bold"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1"
@@ -118,9 +118,6 @@
                 <DataGridTextColumn Header="Подробный статус" Binding="{Binding DetailedStatus}" Width="1.5*"/>
                 <DataGridTextColumn Header="ТН ВЭД" Binding="{Binding TnVed}" Width="*"/>
                 <DataGridTextColumn Header="Тип продукта" Binding="{Binding ProductKind}" Width="*"/>
-                <DataGridTextColumn Header="Упаковка" Binding="{Binding PackageType}" Width="*"/>
-                <DataGridTextColumn Header="Никотин" Binding="{Binding Nicotine}" Width="*"/>
-                <DataGridTextColumn Header="Объём" Binding="{Binding Volume}" Width="*"/>
                 <DataGridTextColumn Header="Обновлено" Binding="{Binding Updated}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

@@ -75,7 +75,15 @@
                     <ListBoxItem Content="📁 Data" Tag="DataPage"/>
                     <ListBoxItem Content="📄 Документы" Tag="DocumentsPage"/>
                     <ListBoxItem Content="🛡️ SUZ" Tag="SUZPage"/>
-                    <ListBoxItem Content="📦 Каталог" Tag="NationalCatalogPage"/>
+                    <ListBoxItem Tag="NationalCatalogPage">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\NationalCatalogPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="Каталог" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
                     <ListBoxItem Content="🔍 Поиск" Tag="SearchPage"/>
                     <ListBoxItem Content="📤 Экспорт" Tag="ExportsPage"/>
                     <ListBoxItem Content="⚙️ Настройки" Tag="SettingsPage"/>

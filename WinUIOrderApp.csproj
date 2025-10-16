@@ -55,6 +55,7 @@
     <None Remove="Resources\document_statuses.json" />
     <None Remove="Resources\document_types.json" />
     <None Remove="Resources\emission_types.json" />
+    <None Remove="Resources\icon\Pages_icon\NationalCatalogPage.png" />
     <None Remove="Resources\icon\product_groups\alcohol.png" />
     <None Remove="Resources\icon\product_groups\autofluids.png" />
     <None Remove="Resources\icon\product_groups\beer.png" />
@@ -108,18 +109,18 @@
     </Resource>
     <Resource Include="Assets\wpfui-icon-256.png" />
     <Resource Include="Assets\wpfui-icon-1024.png" />
-    <EmbeddedResource Include="Resources\cis_statuses.json">
+    <Resource Include="Resources\cis_statuses.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\document_statuses.json">
+    </Resource>
+    <Resource Include="Resources\document_statuses.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\document_types.json">
+    </Resource>
+    <Resource Include="Resources\document_types.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\emission_types.json">
+    </Resource>
+    <Resource Include="Resources\emission_types.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Resource>
     <EmbeddedResource Include="Resources\icon\product_groups\alcohol.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -237,21 +238,24 @@
     <EmbeddedResource Include="Resources\icon\product_groups\wheelchairs.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Resource Include="Resources\icon\Pages_icon\NationalCatalogPage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\order_statuses.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Include="Resources\package_types.json">
+    <Resource Include="Resources\package_types.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\production_types.json">
+    </Resource>
+    <Resource Include="Resources\production_types.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\product_groups.json">
+    </Resource>
+    <Resource Include="Resources\product_groups.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\return_reasons.json">
+    </Resource>
+    <Resource Include="Resources\return_reasons.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Resource>
     <Resource Include="Resources\withdrawal_reasons.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
