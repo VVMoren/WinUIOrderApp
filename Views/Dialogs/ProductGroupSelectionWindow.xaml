@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
+        xmlns:helpers="clr-namespace:WinUIOrderApp.Helpers"
         mc:Ignorable="d"
         Title="Выбор товарной группы"
         Height="600"
@@ -13,7 +14,7 @@
         Background="#FF1F1F1F"
         Foreground="White"
         WindowStyle="None" 
-    AllowsTransparency="True"
+        AllowsTransparency="True"
         BorderThickness="1"
         BorderBrush="#FF333333">
 
@@ -78,8 +79,8 @@
             <Button
                 Style="{StaticResource IconButtonStyle}"
                 Command="{Binding DataContext.SelectProductGroupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                CommandParameter="{Binding}"
-                IsEnabled="{Binding IsEnabled}">
+                CommandParameter="{Binding}">
+                <!-- УБРАЛИ IsEnabled="{Binding IsEnabled}" так как теперь все группы доступны -->
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <Image 
                         Width="48" 
@@ -149,8 +150,9 @@
         <!-- Контейнер для иконок -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20">
             <ItemsControl 
-                ItemsSource="{Binding ProductGroups}"
+                ItemsSource="{Binding Source={x:Static helpers:AppState.Instance}, Path=AvailableProductGroups}"
                 ItemTemplate="{StaticResource ProductGroupTemplate}">
+                <!-- ИЗМЕНИЛИ ItemsSource на AvailableProductGroups из AppState -->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
@@ -177,11 +179,11 @@
                 Cursor="Hand" FontWeight="Bold">
                 <Button.Style>
                     <Style TargetType="Button">
-                        <Setter Property="Background" Value="#FF555555"/>
-                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#FFF6F42E"/>
+                        <Setter Property="Foreground" Value="Black"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF666666"/>
+                                <Setter Property="Background" Value="#FFD8D021"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>

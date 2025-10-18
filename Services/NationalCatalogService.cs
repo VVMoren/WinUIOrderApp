@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WinUIOrderApp.Helpers;
@@ -18,14 +14,9 @@ namespace WinUIOrderApp.Services
         private const int ProductInfoBatchSize = 50;
         private static readonly string FromDate = Uri.EscapeDataString("2000-01-01 00:00:00");
         private static readonly string ToDate = Uri.EscapeDataString("2026-10-16 23:59:59");
-        private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-        {
-            PropertyNameCaseInsensitive = true
-        };
 
-        public async Task<IReadOnlyList<NationalCatalogGood>> LoadAllGoodsAsync(string token, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<NationalCatalogGood>> LoadAllGoodsAsync(string apiKey = null, CancellationToken cancellationToken = default)
         {
-            using var client = CreateClient(token);
             var result = new List<NationalCatalogGood>();
             var offset = 0;
             var total = int.MaxValue;
@@ -34,83 +25,66 @@ namespace WinUIOrderApp.Services
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var url = $"https://xn--80aqu.xn----7sbabas4ajkhfocclk9d3cvfsa.xn--p1ai/v4/product-list?limit={ProductListPageSize}&offset={offset}&from_date={FromDate}&to_date={ToDate}";
-                using var response = await client.GetAsync(url, cancellationToken);
-                var payload = await response.Content.ReadAsStringAsync(cancellationToken);
+                var url = $"product-list?limit={ProductListPageSize}&offset={offset}&from_date={FromDate}&to_date={ToDate}";
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    LogHelper.WriteLog("NationalCatalogService.ProductList.Error", $"{response.StatusCode}: {payload}");
-                    throw new HttpRequestException($"Не удалось получить список товаров. Код: {response.StatusCode}");
-                }
+                var response = await ApiHelper.ExecuteNkRequestAsync<NationalCatalogProductListResponse>(
+                    System.Net.Http.HttpMethod.Get, url, null, apiKey);
 
-                var parsed = JsonSerializer.Deserialize<NationalCatalogProductListResponse>(payload, JsonOptions);
-                if (parsed?.Result?.Goods == null)
-                {
-                    LogHelper.WriteLog("NationalCatalogService.ProductList.Empty", payload);
+                if (!response.IsSuccess)
+                    throw new System.Net.Http.HttpRequestException($"Не удалось получить список товаров: {response.ErrorMessage}");
+
+                if (response.Data?.Result?.Goods == null)
                     break;
-                }
 
                 if (total == int.MaxValue)
-                    total = parsed.Result.Total;
+                    total = response.Data.Result.Total;
 
-                result.AddRange(parsed.Result.Goods);
+                result.AddRange(response.Data.Result.Goods);
 
-                if (parsed.Result.Goods.Count == 0)
+                if (response.Data.Result.Goods.Count == 0)
                     break;
 
-                offset += parsed.Result.Goods.Count;
+                offset += response.Data.Result.Goods.Count;
             }
 
             return result;
         }
 
-        public async Task<IReadOnlyList<NationalCatalogProductInfo>> LoadProductInfoAsync(string token, IReadOnlyCollection<string> gtins, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<NationalCatalogProductInfo>> LoadProductInfoAsync(
+            List<string> gtins, string apiKey = null, CancellationToken cancellationToken = default)
         {
-            if (gtins.Count == 0)
+            if (gtins == null || gtins.Count == 0)
                 return Array.Empty<NationalCatalogProductInfo>();
 
-            using var client = CreateClient(token);
             var result = new List<NationalCatalogProductInfo>();
 
-            foreach (var chunk in gtins
-                         .Where(g => !string.IsNullOrWhiteSpace(g))
-                         .Select(g => g.Trim())
-                         .Chunk(ProductInfoBatchSize))
+            // Разбиваем на пачки по 50 GTIN
+            var chunks = gtins
+                .Where(g => !string.IsNullOrWhiteSpace(g))
+                .Select(g => g.Trim())
+                .Where(g => !string.IsNullOrEmpty(g))
+                .Select((g, index) => new { g, index })
+                .GroupBy(x => x.index / ProductInfoBatchSize)
+                .Select(g => g.Select(x => x.g).ToList())
+                .ToList();
+
+            foreach (var chunk in chunks)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var requestBody = new
-                {
-                    gtins = chunk.ToArray()
-                };
+                var requestBody = new { gtins = chunk.ToArray() };
 
-                using var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
-                using var response = await client.PostAsync("https://markirovka.crpt.ru/api/v4/true-api/product/info", content, cancellationToken);
-                var payload = await response.Content.ReadAsStringAsync(cancellationToken);
+                var response = await ApiHelper.ExecuteNkRequestAsync<NationalCatalogProductInfoResponse>(
+                    System.Net.Http.HttpMethod.Post, "product/info", requestBody, apiKey);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    LogHelper.WriteLog("NationalCatalogService.ProductInfo.Error", $"{response.StatusCode}: {payload}");
-                    throw new HttpRequestException($"Не удалось получить данные товаров. Код: {response.StatusCode}");
-                }
+                if (!response.IsSuccess)
+                    throw new System.Net.Http.HttpRequestException($"Не удалось получить данные товаров: {response.ErrorMessage}");
 
-                var parsed = JsonSerializer.Deserialize<NationalCatalogProductInfoResponse>(payload, JsonOptions);
-                if (parsed?.Results != null)
-                {
-                    result.AddRange(parsed.Results);
-                }
+                if (response.Data?.Results != null)
+                    result.AddRange(response.Data.Results);
             }
 
             return result;
-        }
-
-        private static HttpClient CreateClient(string token)
-        {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            return client;
         }
     }
 }

@@ -214,15 +214,30 @@
             </Expander>
 
             <!-- Дополнительные настройки -->
-            <Expander 
-                Header="⚙️ Дополнительные настройки" 
-                Style="{StaticResource ExpanderStyle}"
-                IsExpanded="False">
+            <Expander Header="⚙️ Дополнительные настройки" 
+                      Style="{StaticResource ExpanderStyle}"
+                      IsExpanded="False">
                 <StackPanel Margin="12,8,12,12">
+                    <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=CertificateOwnerPublicName, StringFormat='Настройки для: {0}'}" 
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               Margin="0,0,0,12"/>
+                    
                     <TextBlock 
-                        Text="Здесь могут быть дополнительные настройки приложения..." 
-                        Foreground="#FFB0B0B0"
-                        FontStyle="Italic"/>
+                               Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=OrganisationInn, StringFormat='ИНН: {0}'}" 
+                               Foreground="#FFB0B0B0"
+                               Margin="0,0,0,8"/>
+                  
+                    <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=OrganisationName}" 
+                               Foreground="#FFB0B0B0"
+                               Margin="0,0,0,12"
+                               TextWrapping="Wrap"/>
+                  
+                    <Button Content="Открыть папку с настройками"
+                            Style="{StaticResource ButtonStyle}"
+                            Click="OpenSettingsFolder_Click"
+                            Width="180"
+                            Margin="0,8,0,0"/>
                 </StackPanel>
             </Expander>
 

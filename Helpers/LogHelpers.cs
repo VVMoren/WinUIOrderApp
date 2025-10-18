@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using Microsoft.Win32;
 
+
+
 namespace WinUIOrderApp.Helpers
 {
     public static class LogHelper
@@ -16,6 +18,22 @@ namespace WinUIOrderApp.Helpers
             {
                 SettingsManager.Settings.LogFilePath = value;
                 SettingsManager.Save();
+            }
+        }
+
+        public static void WriteCertificateLog(string inn, string title, string content)
+        {
+            try
+            {
+                var certLogPath = Path.Combine(CertificateSettingsManager.BaseSettingsDir, inn, "certificate.log");
+                Directory.CreateDirectory(Path.GetDirectoryName(certLogPath));
+
+                string logEntry = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {title}:\n{content}\n{new string('-', 80)}\n";
+                File.AppendAllText(certLogPath, logEntry);
+            }
+            catch (Exception ex)
+            {
+                WriteLog("CertificateLogError", $"Ошибка записи в лог сертификата {inn}: {ex.Message}");
             }
         }
 

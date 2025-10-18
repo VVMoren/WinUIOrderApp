@@ -1,4 +1,6 @@
-﻿using WinUIOrderApp.ViewModels.Pages;
+﻿using System.IO;
+using WinUIOrderApp.Helpers;
+using WinUIOrderApp.ViewModels.Pages;
 using Wpf.Ui.Abstractions.Controls;
 
 namespace WinUIOrderApp.Views.Pages
@@ -14,5 +16,35 @@ namespace WinUIOrderApp.Views.Pages
 
             InitializeComponent();
         }
+
+
+        private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var inn = AppState.ExtractInn(AppState.Instance.CertificateOwner);
+                if (!string.IsNullOrEmpty(inn))
+                {
+                    var settingsPath = CertificateSettingsManager.GetCertificateSettingsPath(inn);
+                    var directory = Path.GetDirectoryName(settingsPath);
+
+                    if (Directory.Exists(directory))
+                    {
+                        System.Diagnostics.Process.Start("explorer.exe", directory);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Папка с настройками не найдена.", "Информация",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка открытия папки: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
+
 }

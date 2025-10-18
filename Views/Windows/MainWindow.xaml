@@ -46,7 +46,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
@@ -71,22 +71,78 @@
                          Foreground="#FFB0B0B0"
                          ItemContainerStyle="{StaticResource NavListBoxItemStyle}" Width="128">
 
-                    <ListBoxItem Content="📊 Главная" Tag="DashboardPage"/>
-                    <ListBoxItem Content="📁 Data" Tag="DataPage"/>
-                    <ListBoxItem Content="📄 Документы" Tag="DocumentsPage"/>
-                    <ListBoxItem Content="🛡️ SUZ" Tag="SUZPage"/>
-                    <ListBoxItem Tag="NationalCatalogPage" Width="115">
+                    <ListBoxItem Tag="DashboardPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\DashboardPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="DataPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\DataPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="DocumentsPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\DocumentsPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="SUZPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\SUZPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="NationalCatalogPage" Width="56">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\NationalCatalogPage.png" 
                                    Width="32" 
                                    Height="32" 
                                    Margin="0,0,2,0"/>
-                            <TextBlock Text="Нац. каталог" VerticalAlignment="Center"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Content="🔍 Поиск" Tag="SearchPage"/>
-                    <ListBoxItem Content="📤 Экспорт" Tag="ExportsPage"/>
-                    <ListBoxItem Content="⚙️ Настройки" Tag="SettingsPage"/>
+                    <ListBoxItem Tag="SearchPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\SearchPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="ExportsPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\ExportsPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="SettingsPage" Width="56">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="X:\VS\source\repos\WinUIOrderApp\Resources\icon\Pages_icon\SettingsPage.png" 
+                                   Width="32" 
+                                   Height="32" 
+                                   Margin="0,0,2,0"/>
+                            <TextBlock Text="" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
                 </ListBox>
 
             </StackPanel>

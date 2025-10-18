@@ -20,71 +20,22 @@ namespace WinUIOrderApp.ViewModels.Pages
         {
             get; set;
         }
-
-        public string Gtin
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Name
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Brand
-        {
-            get; set;
-        } = string.Empty;
-
+        public string Gtin { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Brand { get; set; } = string.Empty;
         public int? ProductGroupId
         {
             get; set;
         }
-
-        public string ProductKind
-        {
-            get; set;
-        } = string.Empty;
-
-        public string ProductGroupCode
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Status
-        {
-            get; set;
-        } = string.Empty;
-
-        public string DetailedStatus
-        {
-            get; set;
-        } = string.Empty;
-
-        public string TnVed
-        {
-            get; set;
-        } = string.Empty;
-
-        public string PackageType
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Nicotine
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Volume
-        {
-            get; set;
-        } = string.Empty;
-
-        public string Updated
-        {
-            get; set;
-        } = string.Empty;
+        public string ProductKind { get; set; } = string.Empty;
+        public string ProductGroupCode { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string DetailedStatus { get; set; } = string.Empty;
+        public string TnVed { get; set; } = string.Empty;
+        public string PackageType { get; set; } = string.Empty;
+        public string Nicotine { get; set; } = string.Empty;
+        public string Volume { get; set; } = string.Empty;
+        public string Updated { get; set; } = string.Empty;
     }
 
     public partial class NationalCatalogViewModel : ObservableObject
@@ -95,10 +46,7 @@ namespace WinUIOrderApp.ViewModels.Pages
         private bool _isActive;
         private Dictionary<string, ProductGroupDto>? _productGroupCache;
 
-        public ObservableCollection<NationalCatalogRow> Items
-        {
-            get;
-        } = new();
+        public ObservableCollection<NationalCatalogRow> Items { get; } = new();
 
         [ObservableProperty]
         private bool isLoading;
@@ -171,8 +119,12 @@ namespace WinUIOrderApp.ViewModels.Pages
                 StatusMessage = "Загрузка данных Национального каталога...";
                 Items.Clear();
 
-                var authToken = AppState.Instance.Token;
-                if (string.IsNullOrWhiteSpace(authToken))
+                // Получаем API Key из настроек сертификата
+                var inn = AppState.ExtractInn(AppState.Instance.CertificateOwner);
+                var settings = CertificateSettingsManager.LoadSettings(inn);
+                var apiKey = settings.Nk.NkApiKey; // Используем API Key если есть
+
+                if (string.IsNullOrWhiteSpace(AppState.Instance.Token) && string.IsNullOrEmpty(apiKey))
                 {
                     StatusMessage = "Необходимо авторизоваться в ГИС МТ в разделе Настройки.";
                     return;
@@ -185,7 +137,8 @@ namespace WinUIOrderApp.ViewModels.Pages
                     return;
                 }
 
-                var goods = await _service.LoadAllGoodsAsync(authToken, token);
+                // Загружаем товары с использованием API Key или Bearer Token
+                var goods = await _service.LoadAllGoodsAsync(apiKey, token);
                 if (goods.Count == 0)
                 {
                     StatusMessage = "Доступные товары в Национальном каталоге не найдены.";
@@ -200,7 +153,8 @@ namespace WinUIOrderApp.ViewModels.Pages
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
-                var info = await _service.LoadProductInfoAsync(authToken, gtins, token);
+                // Загружаем информацию о товарах с использованием API Key или Bearer Token
+                var info = await _service.LoadProductInfoAsync(gtins, apiKey, token);
                 var infoLookup = info
                     .Where(i => !string.IsNullOrWhiteSpace(i.Gtin))
                     .GroupBy(i => NormalizeGtin(i.Gtin))
@@ -374,10 +328,7 @@ namespace WinUIOrderApp.ViewModels.Pages
 
         private class ProductGroupRoot
         {
-            public List<ProductGroupDto> result
-            {
-                get; set;
-            } = new();
+            public List<ProductGroupDto> result { get; set; } = new();
         }
     }
 }
