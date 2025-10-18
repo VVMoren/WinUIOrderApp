@@ -10,7 +10,7 @@
     xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance local:SettingsPage, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
+    d:DesignHeight="650"
     d:DesignWidth="800"
     Background="#FF1F1F1F"
     Foreground="White"
@@ -186,11 +186,63 @@
                 Style="{StaticResource SectionHeaderStyle}"
                 FontSize="18"/>
 
+
+            <!-- доп -->
+            <Expander Header="⚙️ Дополнительные настройки" 
+                      Style="{StaticResource ExpanderStyle}"
+                      IsExpanded="False">
+
+                <Grid>
+                    <TabControl>
+                        <!-- Lk -->
+                        <TabItem Header="Профиль">
+                            <StackPanel Margin="12,8,12,12">
+                                <TextBlock Text="Здесь могут быть другие настройки" 
+                                           Foreground="Black"
+                                           Margin="0,0,0,12"/>
+                                
+                                
+                            </StackPanel>
+                        </TabItem>
+
+                        <!-- Suz -->
+                        <TabItem Header="С.У.З.">
+                            <StackPanel Margin="12,8,12,12">
+                                <TextBlock Text="Здесь могут быть другие настройки" 
+                                           Foreground="Black"
+                                           Margin="0,0,0,12"/>
+
+                            </StackPanel>
+                        </TabItem>
+
+                        <!-- Nk -->
+                        <TabItem Header="Национальный каталог">
+                            <StackPanel Margin="12,8,12,12">
+                                <TextBlock Text="Здесь могут быть другие настройки" 
+                                           Foreground="Black"
+                                           Margin="0,0,0,12"/>
+
+                            </StackPanel>
+                        </TabItem>
+
+                        <!-- Adv -->
+                        <TabItem Header="Расширенные">
+                            <StackPanel Margin="12,8,12,12">
+                                <TextBlock Text="Здесь могут быть другие настройки" 
+                                           Foreground="Black"
+                                           Margin="0,0,0,12"/>
+
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Expander>
+
             <!-- Expander для лог-файла -->
             <Expander 
                 Header="📝 Настройки лог-файла" 
                 Style="{StaticResource ExpanderStyle}"
-                IsExpanded="True">
+                IsExpanded="false">
                 <StackPanel Margin="12,8,12,12">
                     <TextBlock 
                         Text="Путь хранения лог-файла:" 
@@ -212,35 +264,6 @@
                         Width="107" Background="#FFF6F42E" Foreground="Black" Height="23"/>
                 </StackPanel>
             </Expander>
-
-            <!-- Дополнительные настройки -->
-            <Expander Header="⚙️ Дополнительные настройки" 
-                      Style="{StaticResource ExpanderStyle}"
-                      IsExpanded="False">
-                <StackPanel Margin="12,8,12,12">
-                    <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=CertificateOwnerPublicName, StringFormat='Настройки для: {0}'}" 
-                               FontWeight="SemiBold"
-                               Foreground="White"
-                               Margin="0,0,0,12"/>
-                    
-                    <TextBlock 
-                               Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=OrganisationInn, StringFormat='ИНН: {0}'}" 
-                               Foreground="#FFB0B0B0"
-                               Margin="0,0,0,8"/>
-                  
-                    <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=OrganisationName}" 
-                               Foreground="#FFB0B0B0"
-                               Margin="0,0,0,12"
-                               TextWrapping="Wrap"/>
-                  
-                    <Button Content="Открыть папку с настройками"
-                            Style="{StaticResource ButtonStyle}"
-                            Click="OpenSettingsFolder_Click"
-                            Width="180"
-                            Margin="0,8,0,0"/>
-                </StackPanel>
-            </Expander>
-
         </StackPanel>
     </ScrollViewer>
 </Page>
