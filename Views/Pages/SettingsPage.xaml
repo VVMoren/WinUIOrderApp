@@ -37,17 +37,17 @@
         </Style>
 
         <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#FF2196F3"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FFF6F42E"/>
+            <Setter Property="Foreground" Value="Black"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Height" Value="32"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF1976D2"/>
+                    <Setter Property="Background" Value="#FFF6F42E"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#FF1565C0"/>
+                    <Setter Property="Background" Value="#FFF6F42E"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -68,6 +68,92 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Margin" Value="0,8,0,0"/>
         </Style>
+
+        <!-- Цвета -->
+        <SolidColorBrush x:Key="Seg_Background" Color="White"/>
+        <SolidColorBrush x:Key="Seg_Border" Color="#FFBFD6E9"/>
+        <SolidColorBrush x:Key="Seg_Selected" Color="#FFF6F42E"/>
+        <SolidColorBrush x:Key="Seg_Text" Color="#0A0A0A"/>
+        <SolidColorBrush x:Key="Seg_SelectedText" Color="0A0A0A"/>
+
+        <!-- 2) Стиль для каждой "плитки" (TabItem) -->
+        <Style x:Key="SegmentedTabItemStyle" TargetType="TabItem">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource Seg_Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Seg_Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <!-- Одна плитка: рамка и содержимое -->
+                        <Border x:Name="Bd"
+                                CornerRadius="4"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Выбранная плитка -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource Seg_Selected}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Seg_Selected}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Seg_SelectedText}"/>
+                            </Trigger>
+
+                            <!-- Наведение -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF8FB9E6"/>
+                            </Trigger>
+
+                            <!-- Отключено -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                            
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 3) Шаблон TabControl: заголовки в UniformGrid (равные ширины) -->
+        <Style x:Key="SegmentedTabControlStyle" TargetType="TabControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <DockPanel>
+                            <!-- Заголовки -->
+                            <UniformGrid x:Name="HeaderPanel"
+                         IsItemsHost="True"
+                         Rows="1"
+                         DockPanel.Dock="Top"
+                         Margin="12"
+                         HorizontalAlignment="Stretch" />
+                            <!-- Контентная область в рамке -->
+                            <Border BorderBrush="{StaticResource Seg_Border}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Background="White"
+                    Margin="12,0,12,12"
+                    Padding="8">
+                                <ContentPresenter ContentSource="SelectedContent"/>
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <!-- Применяем стиль к Item-ам по умолчанию -->
+            <Setter Property="ItemContainerStyle" Value="{StaticResource SegmentedTabItemStyle}"/>
+        </Style>
+
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -188,56 +274,36 @@
 
 
             <!-- доп -->
-            <Expander Header="⚙️ Дополнительные настройки" 
-                      Style="{StaticResource ExpanderStyle}"
-                      IsExpanded="False">
-
+            <Expander Header="⚙️ Дополнительные настройки" Style="{StaticResource ExpanderStyle}" IsExpanded="True">
                 <Grid>
-                    <TabControl>
-                        <!-- Lk -->
-                        <TabItem Header="Профиль">
+                    <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0">
+                        <TabItem Header="Профиль" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" 
-                                           Foreground="Black"
-                                           Margin="0,0,0,12"/>
-                                
-                                
+                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
-                        <!-- Suz -->
-                        <TabItem Header="С.У.З.">
+                        <TabItem Header="С.У.З." Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" 
-                                           Foreground="Black"
-                                           Margin="0,0,0,12"/>
-
+                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
-                        <!-- Nk -->
-                        <TabItem Header="Национальный каталог">
+                        <TabItem Header="Национальный каталог" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" 
-                                           Foreground="Black"
-                                           Margin="0,0,0,12"/>
-
+                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
-                        <!-- Adv -->
-                        <TabItem Header="Расширенные">
+                        <TabItem Header="Расширенные" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" 
-                                           Foreground="Black"
-                                           Margin="0,0,0,12"/>
-
+                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
                     </TabControl>
                 </Grid>
             </Expander>
-
+            
             <!-- Expander для лог-файла -->
             <Expander 
                 Header="📝 Настройки лог-файла" 
