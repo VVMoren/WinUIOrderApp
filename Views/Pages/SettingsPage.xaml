@@ -279,25 +279,25 @@
                     <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0">
                         <TabItem Header="Профиль" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
+                                <TextBlock Text="настройки профиля" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
                         <TabItem Header="С.У.З." Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
+                                <TextBlock Text="настройки заказов" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
                         <TabItem Header="Национальный каталог" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
+                                <TextBlock Text="настройки кт" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
                         <TabItem Header="Расширенные" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="Здесь могут быть другие настройки" Foreground="Black" Margin="0,0,0,12"/>
+                                <TextBlock Text="расширеные настр." Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
                     </TabControl>
