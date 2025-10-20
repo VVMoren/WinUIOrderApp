@@ -26,6 +26,10 @@ namespace WinUIOrderApp.Models
         public bool AutoOrderProcessing { get; set; } = true;
         public int DefaultWarehouseId { get; set; } = 0;
         public string NotificationEmail { get; set; } = string.Empty;
+
+        // Новые параметры
+        public string OmsId { get; set; } = string.Empty;
+        public string ConnectionId { get; set; } = string.Empty;
     }
 
     public class NkSettings

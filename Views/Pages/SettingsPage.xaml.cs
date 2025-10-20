@@ -45,6 +45,7 @@ namespace WinUIOrderApp.Views.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
     }
 
 }
