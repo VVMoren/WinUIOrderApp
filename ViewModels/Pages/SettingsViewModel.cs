@@ -134,7 +134,7 @@ namespace WinUIOrderApp.ViewModels.Pages
                 }
             }
         }
-
+        
         private void LoadSuzSettings()
         {
             if (SelectedCertificate == null) return;
@@ -313,114 +313,6 @@ namespace WinUIOrderApp.ViewModels.Pages
                 Mouse.OverrideCursor = null;
             }
         }
-        private async Task ConnectToGisMtAsync()
-        {
-            if (SelectedCertificate == null)
-            {
-                MessageBox.Show("Выберите сертификат.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            try
-            {
-                Mouse.OverrideCursor = Cursors.Wait;
-
-                if (AppState.Instance.SelectedCertificate?.Thumbprint != SelectedCertificate.Thumbprint)
-                {
-                    ClearTokenCache();
-                    LogHelper.WriteLog("SettingsViewModel.ConnectToGisMtAsync",
-                        $"Смена сертификата: {AppState.Instance.SelectedCertificate?.Thumbprint} -> {SelectedCertificate.Thumbprint}. Кэш очищен.");
-                }
-
-                var token = await GisMtAuthService.AuthorizeGisMtAsync(SelectedCertificate);
-                if (!string.IsNullOrEmpty(token))
-                {
-                    AppState.Instance.Token = token;
-                    AppState.Instance.SelectedCertificate = SelectedCertificate;
-                    AppState.Instance.CertificateOwner = SelectedCertificate.Subject;
-                    AppState.Instance.CertificateOwnerPublicName = AppState.ExtractCN(SelectedCertificate.Subject);
-                    AppState.Instance.NotifyTokenUpdated();
-
-                    var inn = AppState.ExtractInn(SelectedCertificate.Subject);
-                    if (!string.IsNullOrEmpty(inn))
-                    {
-                        CertificateSettingsManager.EnsureBaseDirectory();
-                        var certSettings = CertificateSettingsManager.LoadSettings(inn);
-                        var participantResponse = await ApiHelper.GetParticipantInfoAsync(inn);
-                        if (participantResponse.IsSuccess && participantResponse.Data.Count > 0)
-                        {
-                            var participant = participantResponse.Data[0];
-                            certSettings.Lk.Inn = participant.Inn;
-                            certSettings.Lk.ActiveProductGroups = participant.ProductGroups;
-                            certSettings.Lk.LastSync = DateTime.Now;
-                            certSettings.Lk.OrganizationName = AppState.Instance.CertificateOwnerPublicName;
-                            CertificateSettingsManager.SaveSettings(inn, certSettings);
-
-                            LogHelper.WriteCertificateLog(inn, "SettingsInitialized",
-                                $"Настройки созданы/обновлены. Группы: {string.Join(", ", participant.ProductGroups)}");
-                        }
-                        else
-                        {
-                            LogHelper.WriteCertificateLog(inn, "SettingsInitialized.Error",
-                                $"Ошибка получения информации об участнике: {participantResponse.ErrorMessage}");
-                        }
-                    }
-
-                    var enabledGroups = GetEnabledGroupsFromSettings(inn);
-                    LogHelper.WriteCertificateLog(inn, "DEBUG_FinalCheck",
-                        $"Финальная проверка - доступно групп: {enabledGroups.Count}\n" +
-                        $"Группы: {string.Join(", ", enabledGroups.Select(pg => pg.code))}");
-
-                    if (enabledGroups.Any())
-                    {
-                        await Task.Delay(300);
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            AppState.Instance.AvailableProductGroups = new ObservableCollection<ProductGroupDto>(enabledGroups);
-                            OpenProductGroupSelection();
-                        });
-                    }
-                    else
-                    {
-                        MessageBox.Show("Авторизация прошла успешно, но у вас нет доступных товарных групп.",
-                            "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-
-                    try
-                    {
-                        var dashboardVm = new ViewModels.Pages.DashboardViewModel();
-                        var method = dashboardVm.GetType().GetMethod(
-                            "LoadOrganisationAsync",
-                            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-                        if (method != null)
-                        {
-                            var task = method.Invoke(dashboardVm, null) as Task;
-                            if (task != null)
-                                await task;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Ошибка при автообновлении Dashboard: " + ex.Message);
-                    }
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("AuthorizeGisMtAsync вернул null/пустой токен.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при авторизации: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                Mouse.OverrideCursor = null;
-            }
-        }
-
         /// Получает доступные товарные группы путем сравнения кодов из файла с кодами из настроек сертификата
         private List<ProductGroupDto> GetEnabledGroupsFromSettings(string inn)
         {
