@@ -25,6 +25,7 @@ namespace WinUIOrderApp.ViewModels.Pages
     {
         // Коллекция доступных сертификатов с приватным ключом
         public ObservableCollection<X509Certificate2> Certificates { get; } = new();
+
         private X509Certificate2? _selectedCertificate;
         public X509Certificate2? SelectedCertificate
         {
@@ -34,10 +35,17 @@ namespace WinUIOrderApp.ViewModels.Pages
                 if (SetProperty(ref _selectedCertificate, value))
                 {
                     ConnectToGisMtCommand.NotifyCanExecuteChanged();
-                    LoadSuzSettings();
+                    // Убрали вызов LoadSuzSettings() здесь, будем вызывать через публичный метод
                 }
             }
         }
+
+        // Новые свойства для настроек С.У.З.
+        [ObservableProperty]
+        private string _suzOmsId = string.Empty;
+
+        [ObservableProperty]
+        private string _suzConnectionId = string.Empty;
 
         // Команды
         public ICommand SelectLogFilePathCommand
@@ -56,8 +64,30 @@ namespace WinUIOrderApp.ViewModels.Pages
         {
             get;
         }
-        public ICommand SaveSuzSettingsCommand { get; }
+        public ICommand SaveSuzSettingsCommand
+        {
+            get;
+        }
+
         public string LogFilePath => LogHelper.LogFilePath;
+
+        // --- Product groups: коллекция и выбор
+        public ObservableCollection<ProductGroupDto> ProductGroups { get; } = new();
+
+        private ProductGroupDto? _selectedProductGroup;
+        public ProductGroupDto? SelectedProductGroup
+        {
+            get => _selectedProductGroup;
+            set
+            {
+                if (SetProperty(ref _selectedProductGroup, value) && value != null)
+                {
+                    AppState.Instance.SelectedProductGroupCode = value.code;
+                    AppState.Instance.SelectedProductGroupName = value.name;
+                    AppState.Instance.NotifyProductGroupChanged();
+                }
+            }
+        }
 
         // ctor
         public SettingsViewModel()
@@ -68,9 +98,15 @@ namespace WinUIOrderApp.ViewModels.Pages
             OpenProductGroupSelectionCommand = new RelayCommand(OpenProductGroupSelection);
             SelectProductGroupCommand = new RelayCommand<ProductGroupDto>(SelectProductGroup);
             SaveSuzSettingsCommand = new RelayCommand(SaveSuzSettings);
-            
+
             LoadCertificates();
             LoadProductGroups();
+        }
+
+        // Публичный метод для вызова из code-behind
+        public void OnCertificateSelectionChanged()
+        {
+            LoadSuzSettings();
         }
 
         // --- загрузка сертификатов
@@ -113,6 +149,8 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
+        private bool CanConnectToGisMt() => SelectedCertificate != null;
+
         private void SelectLogFilePath()
         {
             var dlg = new SaveFileDialog
@@ -134,7 +172,7 @@ namespace WinUIOrderApp.ViewModels.Pages
                 }
             }
         }
-        
+
         private void LoadSuzSettings()
         {
             if (SelectedCertificate == null) return;
@@ -151,8 +189,8 @@ namespace WinUIOrderApp.ViewModels.Pages
             catch (Exception ex)
             {
                 LogHelper.WriteCertificateLog(
-                    AppState.ExtractInn(SelectedCertificate.Subject), 
-                    "LoadSuzSettings.Error", 
+                    AppState.ExtractInn(SelectedCertificate.Subject),
+                    "LoadSuzSettings.Error",
                     ex.ToString()
                 );
             }
@@ -162,7 +200,7 @@ namespace WinUIOrderApp.ViewModels.Pages
         {
             if (SelectedCertificate == null)
             {
-                MessageBox.Show("Выберите сертификат для сохранения настроек.", "Внимание", 
+                MessageBox.Show("Выберите сертификат для сохранения настроек.", "Внимание",
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
@@ -172,7 +210,7 @@ namespace WinUIOrderApp.ViewModels.Pages
                 var inn = AppState.ExtractInn(SelectedCertificate.Subject);
                 if (string.IsNullOrEmpty(inn))
                 {
-                    MessageBox.Show("Не удалось определить ИНН из сертификата.", "Ошибка", 
+                    MessageBox.Show("Не удалось определить ИНН из сертификата.", "Ошибка",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -183,20 +221,20 @@ namespace WinUIOrderApp.ViewModels.Pages
 
                 CertificateSettingsManager.SaveSettings(inn, settings);
 
-                MessageBox.Show("Настройки С.У.З. успешно сохранены.", "Успех", 
+                MessageBox.Show("Настройки С.У.З. успешно сохранены.", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
-                LogHelper.WriteCertificateLog(inn, "SuzSettingsSaved", 
+                LogHelper.WriteCertificateLog(inn, "SuzSettingsSaved",
                     $"OMS ID: {SuzOmsId}, Connection ID: {SuzConnectionId}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении настроек С.У.З.: {ex.Message}", "Ошибка", 
+                MessageBox.Show($"Ошибка при сохранении настроек С.У.З.: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                
+
                 LogHelper.WriteCertificateLog(
-                    AppState.ExtractInn(SelectedCertificate?.Subject), 
-                    "SaveSuzSettings.Error", 
+                    AppState.ExtractInn(SelectedCertificate?.Subject),
+                    "SaveSuzSettings.Error",
                     ex.ToString()
                 );
             }
@@ -258,7 +296,6 @@ namespace WinUIOrderApp.ViewModels.Pages
                         LoadSuzSettings();
                     }
 
-                    // Остальной существующий код...
                     var enabledGroups = GetEnabledGroupsFromSettings(inn);
                     LogHelper.WriteCertificateLog(inn, "DEBUG_FinalCheck",
                         $"Финальная проверка - доступно групп: {enabledGroups.Count}\n" +
@@ -313,7 +350,10 @@ namespace WinUIOrderApp.ViewModels.Pages
                 Mouse.OverrideCursor = null;
             }
         }
+
+        /// <summary>
         /// Получает доступные товарные группы путем сравнения кодов из файла с кодами из настроек сертификата
+        /// </summary>
         private List<ProductGroupDto> GetEnabledGroupsFromSettings(string inn)
         {
             var enabledGroups = new List<ProductGroupDto>();
@@ -381,24 +421,6 @@ namespace WinUIOrderApp.ViewModels.Pages
             {
                 MessageBox.Show("Данная товарная группа недоступна", "Внимание",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        // --- Product groups: коллекция и выбор
-        public ObservableCollection<ProductGroupDto> ProductGroups { get; } = new();
-
-        private ProductGroupDto? _selectedProductGroup;
-        public ProductGroupDto? SelectedProductGroup
-        {
-            get => _selectedProductGroup;
-            set
-            {
-                if (SetProperty(ref _selectedProductGroup, value) && value != null)
-                {
-                    AppState.Instance.SelectedProductGroupCode = value.code;
-                    AppState.Instance.SelectedProductGroupName = value.name;
-                    AppState.Instance.NotifyProductGroupChanged();
-                }
             }
         }
 

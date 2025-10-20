@@ -3,11 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="clr-namespace:WinUIOrderApp.Helpers"
     xmlns:local="clr-namespace:WinUIOrderApp.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:conv="clr-namespace:WinUIOrderApp.Converters"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance local:SettingsPage, IsDesignTimeCreatable=False}"
     d:DesignHeight="650"
@@ -17,9 +14,6 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-        <conv:ProductGroupCodeToIconConverter x:Key="ProductGroupCodeToIconConverter"/>
-
         <!-- Стили для элементов Settings -->
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
@@ -73,8 +67,8 @@
         <SolidColorBrush x:Key="Seg_Background" Color="White"/>
         <SolidColorBrush x:Key="Seg_Border" Color="#FFBFD6E9"/>
         <SolidColorBrush x:Key="Seg_Selected" Color="#FFF6F42E"/>
-        <SolidColorBrush x:Key="Seg_Text" Color="#0A0A0A"/>
-        <SolidColorBrush x:Key="Seg_SelectedText" Color="0A0A0A"/>
+        <SolidColorBrush x:Key="Seg_Text" Color="#FF0A0A0A"/>
+        <SolidColorBrush x:Key="Seg_SelectedText" Color="#FF0A0A0A"/>
 
         <!-- 2) Стиль для каждой "плитки" (TabItem) -->
         <Style x:Key="SegmentedTabItemStyle" TargetType="TabItem">
@@ -116,7 +110,7 @@
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.6"/>
                             </Trigger>
-                            
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -169,13 +163,9 @@
                     Width="400"
                     Style="{StaticResource ComboBoxStyle}"
                     ItemsSource="{Binding Certificates}"
-                    SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" Foreground="Black" SelectionChanged="ComboBox_SelectionChanged">
-                    <ComboBox.OpacityMask>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="Black"/>
-                            <GradientStop Color="#FF635E5E" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ComboBox.OpacityMask>
+                    SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" 
+                    Foreground="Black" 
+                    SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock 
@@ -209,21 +199,11 @@
                         Margin="0,0,8,0"/>
 
                     <TextBlock 
-                        Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=CertificateOwnerPublicName}"
+                        Text="{Binding CertificateOwnerPublicName}"
                         FontWeight="SemiBold" 
                         FontSize="14" 
                         Foreground="#FF4CAF50"
                         VerticalAlignment="Center"/>
-
-                    <Image 
-                        Width="20" 
-                        Height="20" 
-                        Margin="12,0,0,0"
-                        VerticalAlignment="Center"
-                        Source="{Binding Source={x:Static helpers:AppState.Instance},
-                                        Path=SelectedProductGroupCode,
-                                        Converter={StaticResource ProductGroupCodeToIconConverter}}"
-                        ToolTip="{Binding Source={x:Static helpers:AppState.Instance}, Path=SelectedProductGroupName}"/>
                 </StackPanel>
             </Border>
 
@@ -242,12 +222,7 @@
                     Padding="12,8"
                     VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Width="20" 
-                                   Height="20" 
-                                   Margin="0,0,8,0"
-                                   VerticalAlignment="Center"
-                                   Source="{Binding Source={x:Static helpers:AppState.Instance},Path=SelectedProductGroupCode,Converter={StaticResource ProductGroupCodeToIconConverter}}"/>
-                        <TextBlock Text="{Binding Source={x:Static helpers:AppState.Instance}, Path=SelectedProductGroupName}"
+                        <TextBlock Text="{Binding SelectedProductGroupName}"
                                        FontWeight="SemiBold" 
                                        FontSize="14" 
                                        Foreground="White"
@@ -271,7 +246,6 @@
                 Text="Настройки" 
                 Style="{StaticResource SectionHeaderStyle}"
                 FontSize="18"/>
-
 
             <!-- доп -->
             <Expander Header="⚙️ Дополнительные настройки" Style="{StaticResource ExpanderStyle}" IsExpanded="True">
@@ -343,7 +317,7 @@
                     </TabControl>
                 </Grid>
             </Expander>
-            
+
             <!-- Expander для лог-файла -->
             <Expander 
                 Header="📝 Настройки лог-файла" 
