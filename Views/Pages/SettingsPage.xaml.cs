@@ -8,15 +8,18 @@ namespace WinUIOrderApp.Views.Pages
     public partial class SettingsPage : INavigableView<SettingsViewModel>
     {
         public SettingsViewModel ViewModel { get; }
-
         public SettingsPage(SettingsViewModel viewModel)
         {
             ViewModel = viewModel;
             DataContext = viewModel;
-
             InitializeComponent();
         }
 
+        private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // При изменении выбора сертификата загружаем соответствующие настройки
+            ViewModel.LoadSuzSettings();
+        }
 
         private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e)
         {
@@ -27,7 +30,6 @@ namespace WinUIOrderApp.Views.Pages
                 {
                     var settingsPath = CertificateSettingsManager.GetCertificateSettingsPath(inn);
                     var directory = Path.GetDirectoryName(settingsPath);
-
                     if (Directory.Exists(directory))
                     {
                         System.Diagnostics.Process.Start("explorer.exe", directory);
@@ -45,7 +47,5 @@ namespace WinUIOrderApp.Views.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
     }
-
 }

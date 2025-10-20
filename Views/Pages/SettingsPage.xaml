@@ -285,53 +285,47 @@
 
                         <TabItem Header="С.У.З." Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
-                                <TextBlock 
-            Text="Настройки системы управления заказами" 
-            FontWeight="SemiBold" 
-            Foreground="Black" 
-            Margin="0,0,0,16"/>
+                                <TextBlock Text="Настройки системы управления заказами" 
+                                            FontWeight="SemiBold" 
+                                            Foreground="Black" 
+                                            Margin="0,0,0,16"/>
 
                                 <!-- OMS ID -->
                                 <StackPanel Orientation="Vertical" Margin="0,0,0,12">
-                                    <TextBlock 
-                Text="OMS ID:" 
-                FontWeight="Medium" 
-                Foreground="Black" 
-                Margin="0,0,0,4"/>
-                                    <TextBox 
-                x:Name="OmsIdTextBox"
-                Style="{StaticResource TextBoxStyle}"
-                Text="{Binding SuzOmsId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Foreground="Black"
-                Height="32"
-                Padding="8,0"/>
+                                    <TextBlock Text="OMS ID:" 
+                                                FontWeight="Medium" 
+                                                Foreground="Black" 
+                                                Margin="0,0,0,4"/>
+                                    <TextBox x:Name="OmsIdTextBox"
+                                                Style="{StaticResource TextBoxStyle}"
+                                                Text="{Binding SuzOmsId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Foreground="Black"
+                                                Height="32"
+                                                Padding="8,0"/>
                                 </StackPanel>
 
                                 <!-- Идентификатор соединения -->
                                 <StackPanel Orientation="Vertical" Margin="0,0,0,16">
-                                    <TextBlock 
-                Text="Идентификатор соединения:" 
-                FontWeight="Medium" 
-                Foreground="Black" 
-                Margin="0,0,0,4"/>
-                                    <TextBox 
-                x:Name="ConnectionIdTextBox"
-                Style="{StaticResource TextBoxStyle}"
-                Text="{Binding SuzConnectionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Foreground="Black"
-                Height="32"
-                Padding="8,0"/>
+                                    <TextBlock Text="Идентификатор соединения:" 
+                                                FontWeight="Medium" 
+                                                oreground="Black" 
+                                                argin="0,0,0,4"/>
+                                    <TextBox x:Name="ConnectionIdTextBox"
+                                                Style="{StaticResource TextBoxStyle}"
+                                                Text="{Binding SuzConnectionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Foreground="Black"
+                                                Height="32"
+                                                Padding="8,0"/>
                                 </StackPanel>
 
                                 <!-- Кнопка сохранения -->
-                                <Button 
-            Content="Сохранить настройки С.У.З."
-            Style="{StaticResource ButtonStyle}"
-            Command="{Binding SaveSuzSettingsCommand}"
-            Width="200"
-            Height="32"
-            Background="#FFF6F42E" 
-            Foreground="Black"/>
+                                <Button Content="Сохранить настройки С.У.З."
+                                        Style="{StaticResource ButtonStyle}"
+                                        Command="{Binding SaveSuzSettingsCommand}"
+                                        Width="200"
+                                        Height="32"
+                                        Background="#FFF6F42E" 
+                                        Foreground="Black"/>
                             </StackPanel>
                         </TabItem>
 

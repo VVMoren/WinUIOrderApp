@@ -25,7 +25,6 @@ namespace WinUIOrderApp.ViewModels.Pages
     {
         // Коллекция доступных сертификатов с приватным ключом
         public ObservableCollection<X509Certificate2> Certificates { get; } = new();
-
         private X509Certificate2? _selectedCertificate;
         public X509Certificate2? SelectedCertificate
         {
@@ -35,6 +34,7 @@ namespace WinUIOrderApp.ViewModels.Pages
                 if (SetProperty(ref _selectedCertificate, value))
                 {
                     ConnectToGisMtCommand.NotifyCanExecuteChanged();
+                    LoadSuzSettings();
                 }
             }
         }
@@ -56,8 +56,7 @@ namespace WinUIOrderApp.ViewModels.Pages
         {
             get;
         }
-
-        // Путь к текущему лог-файлу (только чтение)
+        public ICommand SaveSuzSettingsCommand { get; }
         public string LogFilePath => LogHelper.LogFilePath;
 
         // ctor
@@ -68,7 +67,8 @@ namespace WinUIOrderApp.ViewModels.Pages
             ConnectToGisMtCommand = new AsyncRelayCommand(ConnectToGisMtAsync, CanConnectToGisMt);
             OpenProductGroupSelectionCommand = new RelayCommand(OpenProductGroupSelection);
             SelectProductGroupCommand = new RelayCommand<ProductGroupDto>(SelectProductGroup);
-
+            SaveSuzSettingsCommand = new RelayCommand(SaveSuzSettings);
+            
             LoadCertificates();
             LoadProductGroups();
         }
@@ -135,8 +135,184 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        private bool CanConnectToGisMt() => SelectedCertificate != null;
+        private void LoadSuzSettings()
+        {
+            if (SelectedCertificate == null) return;
 
+            try
+            {
+                var inn = AppState.ExtractInn(SelectedCertificate.Subject);
+                if (string.IsNullOrEmpty(inn)) return;
+
+                var settings = CertificateSettingsManager.LoadSettings(inn);
+                SuzOmsId = settings.Suz.OmsId ?? string.Empty;
+                SuzConnectionId = settings.Suz.ConnectionId ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteCertificateLog(
+                    AppState.ExtractInn(SelectedCertificate.Subject), 
+                    "LoadSuzSettings.Error", 
+                    ex.ToString()
+                );
+            }
+        }
+
+        private void SaveSuzSettings()
+        {
+            if (SelectedCertificate == null)
+            {
+                MessageBox.Show("Выберите сертификат для сохранения настроек.", "Внимание", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                var inn = AppState.ExtractInn(SelectedCertificate.Subject);
+                if (string.IsNullOrEmpty(inn))
+                {
+                    MessageBox.Show("Не удалось определить ИНН из сертификата.", "Ошибка", 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var settings = CertificateSettingsManager.LoadSettings(inn);
+                settings.Suz.OmsId = SuzOmsId;
+                settings.Suz.ConnectionId = SuzConnectionId;
+
+                CertificateSettingsManager.SaveSettings(inn, settings);
+
+                MessageBox.Show("Настройки С.У.З. успешно сохранены.", "Успех", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LogHelper.WriteCertificateLog(inn, "SuzSettingsSaved", 
+                    $"OMS ID: {SuzOmsId}, Connection ID: {SuzConnectionId}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении настроек С.У.З.: {ex.Message}", "Ошибка", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                
+                LogHelper.WriteCertificateLog(
+                    AppState.ExtractInn(SelectedCertificate?.Subject), 
+                    "SaveSuzSettings.Error", 
+                    ex.ToString()
+                );
+            }
+        }
+
+        private async Task ConnectToGisMtAsync()
+        {
+            if (SelectedCertificate == null)
+            {
+                MessageBox.Show("Выберите сертификат.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                if (AppState.Instance.SelectedCertificate?.Thumbprint != SelectedCertificate.Thumbprint)
+                {
+                    ClearTokenCache();
+                    LogHelper.WriteLog("SettingsViewModel.ConnectToGisMtAsync",
+                        $"Смена сертификата: {AppState.Instance.SelectedCertificate?.Thumbprint} -> {SelectedCertificate.Thumbprint}. Кэш очищен.");
+                }
+
+                var token = await GisMtAuthService.AuthorizeGisMtAsync(SelectedCertificate);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    AppState.Instance.Token = token;
+                    AppState.Instance.SelectedCertificate = SelectedCertificate;
+                    AppState.Instance.CertificateOwner = SelectedCertificate.Subject;
+                    AppState.Instance.CertificateOwnerPublicName = AppState.ExtractCN(SelectedCertificate.Subject);
+                    AppState.Instance.NotifyTokenUpdated();
+
+                    var inn = AppState.ExtractInn(SelectedCertificate.Subject);
+                    if (!string.IsNullOrEmpty(inn))
+                    {
+                        CertificateSettingsManager.EnsureBaseDirectory();
+                        var certSettings = CertificateSettingsManager.LoadSettings(inn);
+                        var participantResponse = await ApiHelper.GetParticipantInfoAsync(inn);
+                        if (participantResponse.IsSuccess && participantResponse.Data.Count > 0)
+                        {
+                            var participant = participantResponse.Data[0];
+                            certSettings.Lk.Inn = participant.Inn;
+                            certSettings.Lk.ActiveProductGroups = participant.ProductGroups;
+                            certSettings.Lk.LastSync = DateTime.Now;
+                            certSettings.Lk.OrganizationName = AppState.Instance.CertificateOwnerPublicName;
+                            CertificateSettingsManager.SaveSettings(inn, certSettings);
+
+                            LogHelper.WriteCertificateLog(inn, "SettingsInitialized",
+                                $"Настройки созданы/обновлены. Группы: {string.Join(", ", participant.ProductGroups)}");
+                        }
+                        else
+                        {
+                            LogHelper.WriteCertificateLog(inn, "SettingsInitialized.Error",
+                                $"Ошибка получения информации об участнике: {participantResponse.ErrorMessage}");
+                        }
+
+                        // Загружаем настройки С.У.З. после успешной авторизации
+                        LoadSuzSettings();
+                    }
+
+                    // Остальной существующий код...
+                    var enabledGroups = GetEnabledGroupsFromSettings(inn);
+                    LogHelper.WriteCertificateLog(inn, "DEBUG_FinalCheck",
+                        $"Финальная проверка - доступно групп: {enabledGroups.Count}\n" +
+                        $"Группы: {string.Join(", ", enabledGroups.Select(pg => pg.code))}");
+
+                    if (enabledGroups.Any())
+                    {
+                        await Task.Delay(300);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            AppState.Instance.AvailableProductGroups = new ObservableCollection<ProductGroupDto>(enabledGroups);
+                            OpenProductGroupSelection();
+                        });
+                    }
+                    else
+                    {
+                        MessageBox.Show("Авторизация прошла успешно, но у вас нет доступных товарных групп.",
+                            "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                    try
+                    {
+                        var dashboardVm = new ViewModels.Pages.DashboardViewModel();
+                        var method = dashboardVm.GetType().GetMethod(
+                            "LoadOrganisationAsync",
+                            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                        if (method != null)
+                        {
+                            var task = method.Invoke(dashboardVm, null) as Task;
+                            if (task != null)
+                                await task;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Ошибка при автообновлении Dashboard: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("AuthorizeGisMtAsync вернул null/пустой токен.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при авторизации: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+        }
         private async Task ConnectToGisMtAsync()
         {
             if (SelectedCertificate == null)
@@ -245,9 +421,7 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        /// <summary>
         /// Получает доступные товарные группы путем сравнения кодов из файла с кодами из настроек сертификата
-        /// </summary>
         private List<ProductGroupDto> GetEnabledGroupsFromSettings(string inn)
         {
             var enabledGroups = new List<ProductGroupDto>();
