@@ -308,8 +308,8 @@
                                 <StackPanel Orientation="Vertical" Margin="0,0,0,16">
                                     <TextBlock Text="Идентификатор соединения:" 
                                                 FontWeight="Medium" 
-                                                oreground="Black" 
-                                                argin="0,0,0,4"/>
+                                                Foreground="Black" 
+                                                Margin="0,0,0,4"/>
                                     <TextBox x:Name="ConnectionIdTextBox"
                                                 Style="{StaticResource TextBoxStyle}"
                                                 Text="{Binding SuzConnectionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
