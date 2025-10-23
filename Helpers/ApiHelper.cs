@@ -86,8 +86,8 @@ namespace WinUIOrderApp.Helpers
             {
                 // Формируем URL с API Key если он передан
                 var url = string.IsNullOrEmpty(apiKey)
-                    ? $"https://markirovka.crpt.ru/api/v3/true-api/nk/{endpoint}"
-                    : $"https://markirovka.crpt.ru/api/v3/true-api/nk/{endpoint}?apikey={apiKey}";
+                    ? $"https://markirovka.crpt.ru/api/v4/true-api/nk/{endpoint}"
+                    : $"https://markirovka.crpt.ru/api/v4/true-api/nk/{endpoint}?apikey={apiKey}";
 
                 var request = new HttpRequestMessage(method, url);
 

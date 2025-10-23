@@ -14,7 +14,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <!-- Стили для элементов Settings -->
+        <!-- Надписи -->
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -250,13 +250,15 @@
             <!-- доп -->
             <Expander Header="⚙️ Дополнительные настройки" Style="{StaticResource ExpanderStyle}" IsExpanded="True">
                 <Grid>
-                    <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0">
-                        <TabItem Header="Профиль" Foreground="Black">
+                    <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0" Background="#FF1F1F1F">
+                        <!-- ЛК ЧЗ -->
+                            <TabItem Header="Профиль" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
                                 <TextBlock Text="настройки профиля" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
+                        <!-- СУЗ -->
                         <TabItem Header="С.У.З." Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
                                 <TextBlock Text="Настройки системы управления заказами" 
@@ -264,32 +266,32 @@
                                             Foreground="Black" 
                                             Margin="0,0,0,16"/>
 
-                                <!-- OMS ID -->
-                                <StackPanel Orientation="Vertical" Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                     <TextBlock Text="OMS ID:" 
                                                 FontWeight="Medium" 
                                                 Foreground="Black" 
-                                                Margin="0,0,0,4"/>
+                                                Margin="10,5,10,5"/>
+                                    
                                     <TextBox x:Name="OmsIdTextBox"
                                                 Style="{StaticResource TextBoxStyle}"
                                                 Text="{Binding SuzOmsId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 Foreground="Black"
-                                                Height="32"
-                                                Padding="8,0"/>
+                                                Height="22"
+                                                Padding="8,0" Width="303"/>
                                 </StackPanel>
 
-                                <!-- Идентификатор соединения -->
-                                <StackPanel Orientation="Vertical" Margin="0,0,0,16">
-                                    <TextBlock Text="Идентификатор соединения:" 
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <TextBlock Text="ID sync:" 
                                                 FontWeight="Medium" 
                                                 Foreground="Black" 
-                                                Margin="0,0,0,4"/>
+                                                Margin="10,5,10,5"/>
+                                    
                                     <TextBox x:Name="ConnectionIdTextBox"
                                                 Style="{StaticResource TextBoxStyle}"
                                                 Text="{Binding SuzConnectionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 Foreground="Black"
-                                                Height="32"
-                                                Padding="8,0"/>
+                                                Height="22"
+                                                Padding="8,0" Width="303"/>
                                 </StackPanel>
 
                                 <!-- Кнопка сохранения -->
@@ -303,17 +305,21 @@
                             </StackPanel>
                         </TabItem>
 
+                        <!-- НК -->
                         <TabItem Header="Национальный каталог" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
                                 <TextBlock Text="настройки кт" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
 
+                        <!-- Расширенные -->
                         <TabItem Header="Расширенные" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
                                 <TextBlock Text="расширеные настр." Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
                         </TabItem>
+
+
                     </TabControl>
                 </Grid>
             </Expander>
