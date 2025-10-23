@@ -125,8 +125,7 @@ namespace WinUIOrderApp.Services
                 CleanOldTokenCache(cacheKey);
 
                 LogHelper.WriteLog("GisMtAuthService", $"Авторизация прошла успешно для сертификата: {cert.Subject}");
-                MessageBox.Show("Авторизация ГИС МТ выполнена успешно.", "ГИС МТ",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+//                MessageBox.Show("Авторизация ГИС МТ выполнена успешно.", "ГИС МТ",MessageBoxButton.OK, MessageBoxImage.Information);
 
                 return tokenObj.token;
             }

@@ -1,14 +1,125 @@
-﻿<Page x:Class="WinUIOrderApp.Views.Pages.NationalCatalogPage"
+<Page x:Class="WinUIOrderApp.Views.Pages.NationalCatalogPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WinUIOrderApp.Views.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="NationalCatalogPage">
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="800" d:DesignWidth="1200"
+      Title="NationalCatalogPage"
+      Background="#FF1F1F1F">
 
-    <Grid>
-        
+    <Page.Resources>
+        <Style x:Key="CatalogDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#FF1F1F1F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="#FF252525"/>
+            <Setter Property="AlternatingRowBackground" Value="#FF2D2D2D"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#FF333333"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FF333333"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="RowHeight" Value="34"/>
+        </Style>
+
+        <Style x:Key="CatalogColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FF2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CatalogCellStyle" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF333333"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF2196F3"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CatalogRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF333333"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="40,30"
+          Background="#00101010">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0"
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,20">
+            <TextBlock Text="Товарная группа:"
+                       Foreground="White"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding SelectedProductGroupTitle}"
+                       Foreground="#FFF6F42E"
+                       FontSize="16"
+                       Margin="8,0,0,0"/>
+            <Button Content="Обновить"
+                    Command="{Binding RefreshCommand}"
+                    IsEnabled="{Binding IsNotLoading}"
+                    Margin="24,0,0,0"
+                    Padding="18,6"
+                    HorizontalAlignment="Left" Background="#FFF6F42E" FontWeight="Bold"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1"
+                    Margin="0,0,0,16">
+            <ProgressBar Height="4"
+                         Minimum="0"
+                         Maximum="100"
+                         IsIndeterminate="True"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                         Foreground="#FFF6F42E"
+                         Background="#FF2D2D2D"/>
+            <TextBlock Text="{Binding StatusMessage}"
+                       Foreground="White"
+                       Margin="0,8,0,0"
+                       FontSize="13"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Items}"
+                  Style="{StaticResource CatalogDataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource CatalogColumnHeaderStyle}"
+                  CellStyle="{StaticResource CatalogCellStyle}"
+                  RowStyle="{StaticResource CatalogRowStyle}"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="GTIN" Binding="{Binding Gtin}" Width="*"/>
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" Width="2*"/>
+                <DataGridTextColumn Header="Бренд" Binding="{Binding Brand}" Width="*"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Подробный статус" Binding="{Binding DetailedStatus}" Width="1.5*"/>
+                <DataGridTextColumn Header="ТН ВЭД" Binding="{Binding TnVed}" Width="*"/>
+                <DataGridTextColumn Header="Тип продукта" Binding="{Binding ProductKind}" Width="*"/>
+                <DataGridTextColumn Header="Обновлено" Binding="{Binding Updated}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Page>

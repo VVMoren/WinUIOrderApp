@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using WinUIOrderApp.ViewModels.Pages;
 
 namespace WinUIOrderApp.Views.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для NationalCatalogPage.xaml
-    /// </summary>
     public partial class NationalCatalogPage : Page
     {
+        public NationalCatalogViewModel ViewModel
+        {
+            get;
+        }
+
         public NationalCatalogPage()
         {
             InitializeComponent();
+            ViewModel = new NationalCatalogViewModel();
+            DataContext = ViewModel;
+
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
+        }
+
+        private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ViewModel.Activate();
+        }
+
+        private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ViewModel.Deactivate();
         }
     }
 }

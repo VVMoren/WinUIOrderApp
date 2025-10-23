@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
+using WinUIOrderApp.Models;
+
+
 
 namespace WinUIOrderApp.Helpers
 {
@@ -26,6 +31,22 @@ namespace WinUIOrderApp.Helpers
             get => _token;
             set => SetProperty(ref _token, value);
         }
+
+        public static string ExtractInn(string subject)
+        {
+            if (string.IsNullOrEmpty(subject)) return string.Empty;
+
+            try
+            {
+                var innMatch = System.Text.RegularExpressions.Regex.Match(subject, @"ИНН=(\d+)");
+                return innMatch.Success ? innMatch.Groups[1].Value : string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
 
         // === 🔹 Сертификат ===
 
@@ -58,7 +79,30 @@ namespace WinUIOrderApp.Helpers
             }
         }
 
+        public static string ExtractInn(X509Certificate2 certificate)
+        {
+            if (certificate == null || string.IsNullOrEmpty(certificate.Subject))
+                return string.Empty;
+
+            try
+            {
+                var innMatch = System.Text.RegularExpressions.Regex.Match(certificate.Subject, @"ИНН=(\d+)");
+                return innMatch.Success ? innMatch.Groups[1].Value : string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         // === 🔹 Товарная группа ===
+
+        private ObservableCollection<ProductGroupDto> _availableProductGroups = new();
+        public ObservableCollection<ProductGroupDto> AvailableProductGroups
+        {
+            get => _availableProductGroups;
+            set => SetProperty(ref _availableProductGroups, value);
+        }
 
         private string? _selectedProductGroupCode;
         public string? SelectedProductGroupCode

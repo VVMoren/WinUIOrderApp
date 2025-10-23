@@ -24,13 +24,16 @@
         {
             get; set;
         }
-        public object[] tnvedDtoSet { get; set; } = System.Array.Empty<object>();
+        public object[]? tnvedDtoSet
+        {
+            get; set;
+        }
         public bool farmer
         {
             get; set;
         }
 
-        public bool IsEnabled { get; set; } = false;
+        //public bool IsEnabled { get; set; } = false;
 
         public override string ToString() => $"{name} ({code})";
     }

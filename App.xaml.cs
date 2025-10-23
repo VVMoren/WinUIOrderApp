@@ -35,7 +35,7 @@ namespace WinUIOrderApp
                 services.AddSingleton<MainWindowViewModel>();
             
                 // страницы часто используют ViewModel'ы — регистрируем их тоже
-                services.AddSingleton<DataViewModel>();
+                services.AddSingleton<ExportsViewModel>();
                 services.AddSingleton<SettingsViewModel>();
             
                 // --- Pages ---

@@ -11,7 +11,7 @@ using WinUIOrderApp.Models;
 
 namespace WinUIOrderApp.ViewModels.Pages
 {
-    public class DataViewModel
+    public class ExportsViewModel
     {
         private readonly string _connectionString = "Host=localhost;Database=marking_codes_db;Username=postgres;Password=0088;Port=5432";
         private readonly List<CisRow> _allRows = new();
