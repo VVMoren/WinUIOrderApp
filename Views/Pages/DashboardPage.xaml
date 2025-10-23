@@ -1,4 +1,5 @@
-﻿<Page
+﻿
+    <Page
     x:Class="WinUIOrderApp.Views.Pages.DashboardPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
