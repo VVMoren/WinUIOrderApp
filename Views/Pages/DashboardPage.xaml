@@ -6,6 +6,10 @@
     xmlns:viewModels="clr-namespace:WinUIOrderApp.ViewModels.Pages"
     Title="DashboardPage">
 
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
+
     <Page.DataContext>
         <viewModels:DashboardViewModel />
     </Page.DataContext>
@@ -37,6 +41,17 @@
                     <TextBlock Text="{Binding ProductGroupName}" FontSize="14" Foreground="White" Margin="0,0,0,10"/>
                 </StackPanel>
             </Border>
+
+            <StackPanel Margin="0,24,0,0" Visibility="{Binding IsCryptoTailEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="Работа с криптохвостами" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                <TextBlock Text="{Binding CryptoTailFolderPath}" FontSize="12" Foreground="#FFB0B0B0" Margin="0,4,0,8" TextWrapping="Wrap"/>
+                <WrapPanel>
+                    <Button Content="Выбрать папку" Command="{Binding SelectCryptoTailFolderCommand}" Margin="0,0,12,12" Padding="16,6"/>
+                    <Button Content="Получить кеш данных для товаров" Command="{Binding FetchProductCacheAsyncCommand}" Margin="0,0,12,12" Padding="16,6"/>
+                    <Button Content="Получить остатки" Command="{Binding FetchStockCommand}" Margin="0,0,12,12" Padding="16,6"/>
+                </WrapPanel>
+                <TextBlock Text="{Binding ProductCacheStatus}" FontSize="12" Foreground="#FFB0B0B0"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

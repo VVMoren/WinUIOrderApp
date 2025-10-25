@@ -47,6 +47,9 @@ namespace WinUIOrderApp.ViewModels.Pages
         [ObservableProperty]
         private string _suzConnectionId = string.Empty;
 
+        [ObservableProperty]
+        private bool _isCryptoTailSearchEnabled;
+
         // Команды
         public ICommand SelectLogFilePathCommand
         {
@@ -65,6 +68,10 @@ namespace WinUIOrderApp.ViewModels.Pages
             get;
         }
         public ICommand SaveSuzSettingsCommand
+        {
+            get;
+        }
+        public ICommand SaveAdvancedSettingsCommand
         {
             get;
         }
@@ -98,6 +105,7 @@ namespace WinUIOrderApp.ViewModels.Pages
             OpenProductGroupSelectionCommand = new RelayCommand(OpenProductGroupSelection);
             SelectProductGroupCommand = new RelayCommand<ProductGroupDto>(SelectProductGroup);
             SaveSuzSettingsCommand = new RelayCommand(SaveSuzSettings);
+            SaveAdvancedSettingsCommand = new RelayCommand(SaveAdvancedSettings);
 
             LoadCertificates();
             LoadProductGroups();
@@ -185,6 +193,8 @@ namespace WinUIOrderApp.ViewModels.Pages
                 var settings = CertificateSettingsManager.LoadSettings(inn);
                 SuzOmsId = settings.Suz.OmsId ?? string.Empty;
                 SuzConnectionId = settings.Suz.ConnectionId ?? string.Empty;
+
+                ApplyAdvancedSettings(inn, settings);
             }
             catch (Exception ex)
             {
@@ -193,6 +203,31 @@ namespace WinUIOrderApp.ViewModels.Pages
                     "LoadSuzSettings.Error",
                     ex.ToString()
                 );
+            }
+        }
+
+        private void ApplyAdvancedSettings(string inn, CertificateSettings settings)
+        {
+            try
+            {
+                IsCryptoTailSearchEnabled = settings.Advanced.EnableCryptoTailSearch;
+                AppState.Instance.UseCryptoTailSearch = settings.Advanced.EnableCryptoTailSearch;
+                AppState.Instance.CryptoTailFolderPath = settings.Advanced.CryptoTailFolderPath ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(settings.Advanced.ProductCacheFileName))
+                {
+                    var certDir = CertificateSettingsManager.GetCertificateDirectory(inn);
+                    var cachePath = Path.Combine(certDir, settings.Advanced.ProductCacheFileName);
+                    AppState.Instance.ProductCacheFilePath = File.Exists(cachePath) ? cachePath : null;
+                }
+                else
+                {
+                    AppState.Instance.ProductCacheFilePath = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteCertificateLog(inn, "ApplyAdvancedSettings.Error", ex.ToString());
             }
         }
 
@@ -237,6 +272,51 @@ namespace WinUIOrderApp.ViewModels.Pages
                     "SaveSuzSettings.Error",
                     ex.ToString()
                 );
+            }
+        }
+
+        private void SaveAdvancedSettings()
+        {
+            if (SelectedCertificate == null)
+            {
+                MessageBox.Show("Выберите сертификат перед сохранением настроек.", "Внимание",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                var inn = AppState.ExtractInn(SelectedCertificate.Subject);
+                if (string.IsNullOrEmpty(inn))
+                {
+                    MessageBox.Show("Не удалось определить ИНН для выбранного сертификата.", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var settings = CertificateSettingsManager.LoadSettings(inn);
+                settings.Advanced.EnableCryptoTailSearch = IsCryptoTailSearchEnabled;
+
+                if (!IsCryptoTailSearchEnabled)
+                {
+                    settings.Advanced.CryptoTailFolderPath = string.Empty;
+                    settings.Advanced.ProductCacheFileName = string.Empty;
+                    settings.Advanced.ProductCacheUpdatedAt = null;
+                    AppState.Instance.CryptoTailFolderPath = string.Empty;
+                    AppState.Instance.ProductCacheFilePath = null;
+                }
+
+                CertificateSettingsManager.SaveSettings(inn, settings);
+
+                AppState.Instance.UseCryptoTailSearch = IsCryptoTailSearchEnabled;
+
+                MessageBox.Show("Расширенные настройки сохранены.", "Готово",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении расширенных настроек: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

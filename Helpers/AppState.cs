@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -79,6 +81,48 @@ namespace WinUIOrderApp.Helpers
             }
         }
 
+        private bool _useCryptoTailSearch;
+        public bool UseCryptoTailSearch
+        {
+            get => _useCryptoTailSearch;
+            set
+            {
+                if (SetProperty(ref _useCryptoTailSearch, value))
+                    AdvancedSettingsChanged?.Invoke();
+            }
+        }
+
+        private string _cryptoTailFolderPath = string.Empty;
+        public string CryptoTailFolderPath
+        {
+            get => _cryptoTailFolderPath;
+            set
+            {
+                if (SetProperty(ref _cryptoTailFolderPath, value))
+                    AdvancedSettingsChanged?.Invoke();
+            }
+        }
+
+        private string? _productCacheFilePath;
+        public string? ProductCacheFilePath
+        {
+            get => _productCacheFilePath;
+            set
+            {
+                if (SetProperty(ref _productCacheFilePath, value))
+                    AdvancedSettingsChanged?.Invoke();
+            }
+        }
+
+        private List<CisItem> _latestCisItems = new();
+        public IReadOnlyList<CisItem> LatestCisItems => _latestCisItems;
+
+        public void UpdateLatestCisItems(IEnumerable<CisItem>? items)
+        {
+            _latestCisItems = items?.ToList() ?? new List<CisItem>();
+            MarkingCodesUpdated?.Invoke();
+        }
+
         public static string ExtractInn(X509Certificate2 certificate)
         {
             if (certificate == null || string.IsNullOrEmpty(certificate.Subject))
@@ -125,6 +169,31 @@ namespace WinUIOrderApp.Helpers
 
         public event Action? OnProductGroupChanged;
         public void NotifyProductGroupChanged() => OnProductGroupChanged?.Invoke();
+
+        public event Action? AdvancedSettingsChanged;
+
+        public event Action? MarkingCodesUpdated;
+
+        public event Action? NavigateToExportsRequested;
+
+        public event Action? KmDownloadRequested;
+
+        private bool _pendingKmDownload;
+
+        public void RequestNavigateToExports() => NavigateToExportsRequested?.Invoke();
+
+        public void RequestKmDownload()
+        {
+            _pendingKmDownload = true;
+            KmDownloadRequested?.Invoke();
+        }
+
+        public bool ConsumePendingKmDownload()
+        {
+            var pending = _pendingKmDownload;
+            _pendingKmDownload = false;
+            return pending;
+        }
 
         // === 🔹 Путь настроек ===
 

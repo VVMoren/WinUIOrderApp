@@ -46,5 +46,12 @@ namespace WinUIOrderApp.Models
         public int RequestTimeout { get; set; } = 30;
         public bool EnableTelemetry { get; set; } = true;
         public string CustomApiUrl { get; set; } = string.Empty;
+        public bool EnableCryptoTailSearch { get; set; } = false;
+        public string CryptoTailFolderPath { get; set; } = string.Empty;
+        public string ProductCacheFileName { get; set; } = string.Empty;
+        public DateTime? ProductCacheUpdatedAt { get; set; }
+        {
+            get; set;
+        }
     }
 }
