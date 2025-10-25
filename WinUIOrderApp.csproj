@@ -152,9 +152,11 @@
   <ItemGroup>
     <Reference Include="CryptoPro.Security.Cryptography">
       <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="CryptoPro.Security.Cryptography.Pkcs">
       <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.Pkcs.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="dotnetcades">
       <HintPath>H:\Загрузки\dotnetcades-main\dotnetcades-main\dotnetcades\bin\Debug\netstandard2.0\dotnetcades.dll</HintPath>
