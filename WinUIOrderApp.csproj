@@ -150,6 +150,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CryptoPro.Security.Cryptography">
+      <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="CryptoPro.Security.Cryptography.Pkcs">
+      <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.Pkcs.dll</HintPath>
+    </Reference>
     <Reference Include="dotnetcades">
       <HintPath>H:\Загрузки\dotnetcades-main\dotnetcades-main\dotnetcades\bin\Debug\netstandard2.0\dotnetcades.dll</HintPath>
     </Reference>
@@ -160,26 +166,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="CryptoPro.Security.Cryptography">
-      <HintPath>Resources\libs\CryptoPro.Security.Cryptography.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="CryptoPro.Security.Cryptography.Pkcs">
-      <HintPath>Resources\libs\CryptoPro.Security.Cryptography.Pkcs.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\libs\CryptoPro.Security.Cryptography.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\libs\CryptoPro.Security.Cryptography.Pkcs.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  
 
 
 
