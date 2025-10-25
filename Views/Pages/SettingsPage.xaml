@@ -165,7 +165,7 @@
                     ItemsSource="{Binding Certificates}"
                     SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" 
                     Foreground="Black" 
-                    SelectionChanged="ComboBox_SelectionChanged">
+                    SelectionChanged="ComboBox_SelectionChanged" Background="{x:Null}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock 
@@ -180,7 +180,7 @@
                     Style="{StaticResource ButtonStyle}"
                     Command="{Binding ConnectToGisMtCommand}"
                     Width="147"
-                    Margin="12,0,0,0" Background="#FFF6F42E" Foreground="Black"/>
+                    Margin="12,0,0,0" Background="#FFF6F42E" Foreground="Black" Click="Button_Click"/>
             </StackPanel>
 
             <!-- Информация о сертификате -->
@@ -252,7 +252,7 @@
                 <Grid>
                     <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0" Background="#FF1F1F1F">
                         <!-- ЛК ЧЗ -->
-                            <TabItem Header="Профиль" Foreground="Black">
+                        <TabItem Header="Профиль" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">
                                 <TextBlock Text="настройки профиля" Foreground="Black" Margin="0,0,0,12"/>
                             </StackPanel>
@@ -271,7 +271,7 @@
                                                 FontWeight="Medium" 
                                                 Foreground="Black" 
                                                 Margin="10,5,10,5"/>
-                                    
+
                                     <TextBox x:Name="OmsIdTextBox"
                                                 Style="{StaticResource TextBoxStyle}"
                                                 Text="{Binding SuzOmsId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -285,7 +285,7 @@
                                                 FontWeight="Medium" 
                                                 Foreground="Black" 
                                                 Margin="10,5,10,5"/>
-                                    
+
                                     <TextBox x:Name="ConnectionIdTextBox"
                                                 Style="{StaticResource TextBoxStyle}"
                                                 Text="{Binding SuzConnectionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

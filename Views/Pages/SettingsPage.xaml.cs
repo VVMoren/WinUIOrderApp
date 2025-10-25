@@ -54,5 +54,10 @@ namespace WinUIOrderApp.Views.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

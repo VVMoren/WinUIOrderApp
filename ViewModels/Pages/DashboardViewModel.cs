@@ -6,10 +6,11 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;      // для Mouse и Cursors
+using Microsoft.Win32;          // для OpenFolderDialog
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WinUIOrderApp.Helpers;
-using Forms = System.Windows.Forms;
 
 namespace WinUIOrderApp.ViewModels.Pages
 {
@@ -252,21 +253,24 @@ namespace WinUIOrderApp.ViewModels.Pages
                 return;
             }
 
-            using var dialog = new Forms.FolderBrowserDialog
+            // WPF‑диалог выбора папки из .NET 8
+            var dialog = new OpenFolderDialog
             {
-                Description = "Выберите папку с криптохвостами"
+                Title = "Выберите папку с криптохвостами",
+                Multiselect = false
             };
 
-            if (dialog.ShowDialog() == Forms.DialogResult.OK)
+            bool? result = dialog.ShowDialog();
+            if (result == true)
             {
                 try
                 {
                     var settings = CertificateSettingsManager.LoadSettings(inn);
-                    settings.Advanced.CryptoTailFolderPath = dialog.SelectedPath;
+                    settings.Advanced.CryptoTailFolderPath = dialog.FolderName;
                     CertificateSettingsManager.SaveSettings(inn, settings);
 
-                    AppState.Instance.CryptoTailFolderPath = dialog.SelectedPath;
-                    CryptoTailFolderPath = dialog.SelectedPath;
+                    AppState.Instance.CryptoTailFolderPath = dialog.FolderName;
+                    CryptoTailFolderPath = dialog.FolderName;
                     ProductCacheStatus = BuildProductCacheStatus();
 
                     MessageBox.Show("Папка сохранена.", "Готово",
@@ -315,7 +319,8 @@ namespace WinUIOrderApp.ViewModels.Pages
 
             try
             {
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+                // Устанавливаем курсор «ожидание»
+                Mouse.OverrideCursor = Cursors.Wait;
 
                 var goods = new List<ProductCacheService.ProductCacheItem>();
                 var offset = 0;
@@ -369,6 +374,7 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
             finally
             {
+                // Возвращаем курсор в обычный режим
                 Mouse.OverrideCursor = null;
             }
         }
@@ -389,14 +395,23 @@ namespace WinUIOrderApp.ViewModels.Pages
 
         private class ProductListResponse
         {
-            public int? Total { get; set; }
-            public ProductListResult? Result { get; set; }
+            public int? Total
+            {
+                get; set;
+            }
+            public ProductListResult? Result
+            {
+                get; set;
+            }
         }
 
         private class ProductListResult
         {
             public List<ProductCacheService.ProductCacheItem> Goods { get; set; } = new();
-            public int? Total { get; set; }
+            public int? Total
+            {
+                get; set;
+            }
         }
     }
 }

@@ -23,7 +23,6 @@ namespace WinUIOrderApp.ViewModels.Pages
 {
     public partial class SettingsViewModel : ObservableObject
     {
-        // Коллекция доступных сертификатов с приватным ключом
         public ObservableCollection<X509Certificate2> Certificates { get; } = new();
 
         private X509Certificate2? _selectedCertificate;
@@ -40,7 +39,6 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        // Новые свойства для настроек С.У.З.
         [ObservableProperty]
         private string _suzOmsId = string.Empty;
 
@@ -50,7 +48,6 @@ namespace WinUIOrderApp.ViewModels.Pages
         [ObservableProperty]
         private bool _isCryptoTailSearchEnabled;
 
-        // Команды
         public ICommand SelectLogFilePathCommand
         {
             get;
@@ -78,7 +75,6 @@ namespace WinUIOrderApp.ViewModels.Pages
 
         public string LogFilePath => LogHelper.LogFilePath;
 
-        // --- Product groups: коллекция и выбор
         public ObservableCollection<ProductGroupDto> ProductGroups { get; } = new();
 
         private ProductGroupDto? _selectedProductGroup;
@@ -96,7 +92,6 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        // ctor
         public SettingsViewModel()
         {
             // команды
@@ -111,13 +106,11 @@ namespace WinUIOrderApp.ViewModels.Pages
             LoadProductGroups();
         }
 
-        // Публичный метод для вызова из code-behind
         public void OnCertificateSelectionChanged()
         {
             LoadSuzSettings();
         }
 
-        // --- загрузка сертификатов
         public void LoadCertificates()
         {
             Certificates.Clear();
@@ -431,9 +424,6 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        /// <summary>
-        /// Получает доступные товарные группы путем сравнения кодов из файла с кодами из настроек сертификата
-        /// </summary>
         private List<ProductGroupDto> GetEnabledGroupsFromSettings(string inn)
         {
             var enabledGroups = new List<ProductGroupDto>();
@@ -577,7 +567,6 @@ namespace WinUIOrderApp.ViewModels.Pages
             }
         }
 
-        // DTO для product_groups.json
         private class ProductGroupRoot
         {
             public List<ProductGroupDto> result { get; set; } = new();
