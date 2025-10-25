@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="8.2.1"/>
+    <PackageReference Include="EPPlus" Version="8.2.1" />
     <!-- Удалена Microsoft.UI.Xaml -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0-rc.1.25451.107" />
@@ -171,6 +171,16 @@
       <Private>true</Private>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\libs\CryptoPro.Security.Cryptography.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\libs\CryptoPro.Security.Cryptography.Pkcs.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 
 </Project>
