@@ -17,6 +17,8 @@ namespace WinUIOrderApp
     {
         private IHost? _host;
 
+        public static IServiceProvider? Services => (Current as App)?._host?.Services;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -32,6 +34,7 @@ namespace WinUIOrderApp
             {
                 // --- ViewModels (регистрируем те, что используются в Page constructors) ---
                 services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<DataPageViewModel>();
                 services.AddSingleton<MainWindowViewModel>();
             
                 // страницы часто используют ViewModel'ы — регистрируем их тоже

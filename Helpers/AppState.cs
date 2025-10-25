@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using CommunityToolkit.Mvvm.ComponentModel;
+using WinUIOrderApp.Models;
 
 namespace WinUIOrderApp.Helpers
 {
@@ -54,8 +56,67 @@ namespace WinUIOrderApp.Helpers
                     // Автоматически обновляем отображаемое имя (CN=...)
                     if (value != null)
                         CertificateOwnerPublicName = ExtractCN(value.Subject);
+
+                    NotifyCertificateSettingsChanged();
                 }
             }
+        }
+
+        // === 🔹 Настройки сертификатов ===
+
+        private readonly Dictionary<string, CertificatePreferences> _certificatePreferences = new();
+        public IReadOnlyDictionary<string, CertificatePreferences> CertificatePreferences => _certificatePreferences;
+
+        public CertificatePreferences GetOrCreatePreferences(string thumbprint)
+        {
+            if (!_certificatePreferences.TryGetValue(thumbprint, out var prefs))
+            {
+                prefs = new CertificatePreferences();
+                _certificatePreferences[thumbprint] = prefs;
+            }
+
+            return prefs;
+        }
+
+        public CertificatePreferences? GetCurrentCertificatePreferences()
+        {
+            var thumbprint = SelectedCertificate?.Thumbprint;
+            if (string.IsNullOrEmpty(thumbprint))
+                return null;
+            return GetOrCreatePreferences(thumbprint);
+        }
+
+        public void UpdateCertificatePreferences(string thumbprint, CertificatePreferences preferences)
+        {
+            _certificatePreferences[thumbprint] = preferences;
+            NotifyCertificateSettingsChanged();
+            SaveSettings();
+        }
+
+        public event Action? CertificateSettingsChanged;
+        public void NotifyCertificateSettingsChanged() => CertificateSettingsChanged?.Invoke();
+
+        // === 🔹 КМ и кешированные товары ===
+
+        public List<CisItem> LastKmResults { get; private set; } = new();
+        public event Action? KmDataUpdated;
+        public void UpdateKmResults(IEnumerable<CisItem> items)
+        {
+            LastKmResults = items?.ToList() ?? new List<CisItem>();
+            KmDataUpdated?.Invoke();
+        }
+
+        public Dictionary<string, CachedGood> CachedGoods { get; private set; } = new();
+        public event Action? ProductCacheUpdated;
+        public void UpdateProductCache(IEnumerable<CachedGood> goods)
+        {
+            CachedGoods = goods?
+                .Where(g => !string.IsNullOrEmpty(g.Gtin))
+                .GroupBy(g => g.Gtin!)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, CachedGood>();
+
+            ProductCacheUpdated?.Invoke();
         }
 
         // === 🔹 Товарная группа ===
@@ -95,7 +156,8 @@ namespace WinUIOrderApp.Helpers
                 var settings = new AppUserSettings
                 {
                     CertificateThumbprint = SelectedCertificate?.Thumbprint,
-                    ProductGroupCode = SelectedProductGroupCode
+                    ProductGroupCode = SelectedProductGroupCode,
+                    Certificates = _certificatePreferences
                 };
 
                 File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
@@ -118,6 +180,15 @@ namespace WinUIOrderApp.Helpers
                     return;
 
                 SelectedProductGroupCode = settings.ProductGroupCode;
+
+                _certificatePreferences.Clear();
+                if (settings.Certificates != null)
+                {
+                    foreach (var pair in settings.Certificates)
+                    {
+                        _certificatePreferences[pair.Key] = pair.Value ?? new CertificatePreferences();
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(settings.CertificateThumbprint))
                 {
@@ -170,6 +241,10 @@ namespace WinUIOrderApp.Helpers
             {
                 get; set;
             }
+            public Dictionary<string, CertificatePreferences?>? Certificates
+            {
+                get; set;
+            }
         }
 
         // === 🔹 Утилита: извлечение CN из Subject сертификата ===
@@ -189,6 +264,52 @@ namespace WinUIOrderApp.Helpers
                 end = subject.Length;
 
             return subject.Substring(start, end - start).Trim();
+        }
+
+        // === 🔹 Папки сертификатов ===
+
+        private static string GetCertificatesRoot()
+        {
+            var root = Path.Combine(AppContext.BaseDirectory, "certificates");
+            if (!Directory.Exists(root))
+                Directory.CreateDirectory(root);
+            return root;
+        }
+
+        private static string? GetCertificateThumbprintFolder(string? thumbprint, bool ensure)
+        {
+            if (string.IsNullOrWhiteSpace(thumbprint))
+                return null;
+
+            var folder = Path.Combine(GetCertificatesRoot(), thumbprint);
+            if (ensure && !Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            return folder;
+        }
+
+        public string? GetCurrentCertificateFolder(bool ensure = true) =>
+            GetCertificateThumbprintFolder(SelectedCertificate?.Thumbprint, ensure);
+
+        public string? GetCurrentCertificateDataFolder(bool ensure = true)
+        {
+            var root = GetCurrentCertificateFolder(ensure);
+            if (root == null)
+                return null;
+            var dataFolder = Path.Combine(root, "данные");
+            if (ensure && !Directory.Exists(dataFolder))
+                Directory.CreateDirectory(dataFolder);
+            return dataFolder;
+        }
+
+        public string? GetCurrentCertificateKmFolder(bool ensure = true)
+        {
+            var root = GetCurrentCertificateFolder(ensure);
+            if (root == null)
+                return null;
+            var kmFolder = Path.Combine(root, "km");
+            if (ensure && !Directory.Exists(kmFolder))
+                Directory.CreateDirectory(kmFolder);
+            return kmFolder;
         }
     }
 }

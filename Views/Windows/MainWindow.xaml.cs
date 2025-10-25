@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WinUIOrderApp.ViewModels.Windows;
@@ -51,6 +52,18 @@ namespace WinUIOrderApp.Views.Windows
 
             if (page != null)
                 ContentFrame.Navigate(page);
+        }
+
+        public void NavigateTo(string tag)
+        {
+            foreach (var item in NavList.Items.OfType<ListBoxItem>())
+            {
+                if (item.Tag is string itemTag && itemTag == tag)
+                {
+                    NavList.SelectedItem = item;
+                    return;
+                }
+            }
         }
     }
 }

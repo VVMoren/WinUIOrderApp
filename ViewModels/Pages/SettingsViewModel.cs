@@ -37,8 +37,20 @@ namespace WinUIOrderApp.ViewModels.Pages
                 if (SetProperty(ref _selectedCertificate, value))
                 {
                     ConnectToGisMtCommand.NotifyCanExecuteChanged();
+                    SaveCertificatePreferencesCommand.NotifyCanExecuteChanged();
+                    LoadCertificatePreferences();
                 }
             }
+        }
+
+        [ObservableProperty]
+        private bool isCryptoTailSearchEnabled;
+
+        public bool CanModifyCertificatePreferences => SelectedCertificate != null;
+
+        public RelayCommand SaveCertificatePreferencesCommand
+        {
+            get;
         }
 
         // Команды
@@ -72,6 +84,7 @@ namespace WinUIOrderApp.ViewModels.Pages
             ConnectToGisMtCommand = new AsyncRelayCommand(ConnectToGisMtAsync, CanConnectToGisMt);
             OpenProductGroupSelectionCommand = new RelayCommand(OpenProductGroupSelection);
             SelectProductGroupCommand = new RelayCommand<ProductGroupDto>(SelectProductGroup);
+            SaveCertificatePreferencesCommand = new RelayCommand(SaveCertificatePreferences, () => SelectedCertificate != null);
 
             LoadCertificates();
             LoadProductGroups();
@@ -79,6 +92,9 @@ namespace WinUIOrderApp.ViewModels.Pages
             {
                 _ = LoadUserProfileAndFilterProductGroups();
             }
+
+            AppState.Instance.CertificateSettingsChanged += OnCertificateSettingsChanged;
+            LoadCertificatePreferences();
         }
 
         // --- загрузка сертификатов (сделал public чтобы можно было вызывать и с View)
@@ -105,6 +121,46 @@ namespace WinUIOrderApp.ViewModels.Pages
                     System.Diagnostics.Debug.WriteLine($"LoadCertificates [{loc}] error: {ex.Message}");
                 }
             }
+        }
+
+        private void OnCertificateSettingsChanged()
+        {
+            LoadCertificatePreferences();
+        }
+
+        private void LoadCertificatePreferences()
+        {
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                var thumbprint = SelectedCertificate?.Thumbprint;
+                if (string.IsNullOrEmpty(thumbprint))
+                {
+                    IsCryptoTailSearchEnabled = false;
+                    return;
+                }
+
+                var prefs = AppState.Instance.GetOrCreatePreferences(thumbprint);
+                IsCryptoTailSearchEnabled = prefs.EnableCryptoTailSearch;
+            });
+        }
+
+        private void SaveCertificatePreferences()
+        {
+            var thumbprint = SelectedCertificate?.Thumbprint;
+            if (string.IsNullOrEmpty(thumbprint))
+            {
+                MessageBox.Show("Выберите сертификат для настройки.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var prefs = new CertificatePreferences
+            {
+                EnableCryptoTailSearch = IsCryptoTailSearchEnabled,
+                CryptoTailFolder = AppState.Instance.GetOrCreatePreferences(thumbprint).CryptoTailFolder
+            };
+
+            AppState.Instance.UpdateCertificatePreferences(thumbprint, prefs);
+            MessageBox.Show("Настройки сертификата сохранены.", "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // надёжная проверка наличия приватного ключа

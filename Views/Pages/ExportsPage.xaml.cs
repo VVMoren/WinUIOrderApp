@@ -20,7 +20,6 @@ namespace WinUIOrderApp.Views.Pages
     public partial class ExportsPage : Page
     {
         private CancellationTokenSource _kmCts;
-        private readonly string KM_BASE_DIR = @"H:\Документы\WinUIOrderApp\km";
         private const string NCP_TOBACCO_URL = "https://tobacco.crpt.ru";
         private const string URL_CIS_SEARCH = $"{NCP_TOBACCO_URL}/bff-elk/v1/cis/search";
         private const int HTTP_TIMEOUT = 300;
@@ -28,9 +27,24 @@ namespace WinUIOrderApp.Views.Pages
         private const int BATCH_SIZE = 1000;
 
         private CancellationTokenSource _updCts;
-        private readonly string UPD_BASE_DIR = @"H:\Документы\WinUIOrderApp\upd";
-        private readonly string UPD_LOG_FILE = @"H:\Документы\WinUIOrderApp\upd\log_upd.txt";
         private const string URL_UPD_SEARCH = "https://tobacco.crpt.ru/bff-elk/v1/documents/tobacco/search";
+
+        private string KmBaseDir =>
+            AppState.Instance.GetCurrentCertificateKmFolder() ??
+            Path.Combine(AppContext.BaseDirectory, "km");
+
+        private string UpdBaseDir
+        {
+            get
+            {
+                var root = AppState.Instance.GetCurrentCertificateFolder();
+                return root != null
+                    ? Path.Combine(root, "upd")
+                    : Path.Combine(AppContext.BaseDirectory, "upd");
+            }
+        }
+
+        private string UpdLogFile => Path.Combine(UpdBaseDir, "log_upd.txt");
 
         // Модели для КМ
         private class CisSearchResponse
@@ -200,6 +214,21 @@ namespace WinUIOrderApp.Views.Pages
             Loaded += ExportsPage_Loaded;
             Unloaded += ExportsPage_Unloaded;
             LoadCisStatuses();
+        }
+
+        public async Task StartKmDataFetchFromDashboardAsync()
+        {
+            await Dispatcher.InvokeAsync(async () =>
+            {
+                if (!StatusItems.Any())
+                    return;
+
+                var statuses = StatusItems.Where(s => s.IsSelected).Select(s => s.Id).ToList();
+                if (!statuses.Any())
+                    statuses = StatusItems.Select(s => s.Id).ToList();
+
+                await GetKmDataParallelAsync(statuses);
+            });
         }
 
         private async void ExportsPage_Loaded(object sender, RoutedEventArgs e)
@@ -472,7 +501,9 @@ namespace WinUIOrderApp.Views.Pages
                     });
 
                     // Сохранение результатов в файл
-                    await SaveKmResultsToFile(allCisData.ToList());
+                    var allDataList = allCisData.ToList();
+                    await SaveKmResultsToFile(allDataList);
+                    AppState.Instance.UpdateKmResults(allDataList);
 
                     KmStatusText.Text = "Готово";
                     KmProgressText.Text = $"Получено {allCisData.Count:N0} КМ, {uniqueGtins.Count:N0} уникальных GTIN";
@@ -649,13 +680,13 @@ namespace WinUIOrderApp.Views.Pages
         {
             try
             {
-                EnsureDirectoryExists(KM_BASE_DIR);
+                EnsureDirectoryExists(KmBaseDir);
 
                 var certName = AppState.Instance.CertificateOwnerPublicName ?? "Unknown";
                 var cleanCertName = new string(certName.Where(c => char.IsLetterOrDigit(c) || c == ' ').ToArray());
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 var fileName = $"{cisData.Count}_{timestamp}_{cleanCertName}.txt";
-                var filePath = Path.Combine(KM_BASE_DIR, fileName);
+                var filePath = Path.Combine(KmBaseDir, fileName);
 
                 var sb = new StringBuilder();
                 sb.AppendLine("CIS");
@@ -716,8 +747,8 @@ namespace WinUIOrderApp.Views.Pages
                 UpdStatusComboBox.SelectedIndex = 0;
 
                 // Создаем директории для УПД
-                EnsureDirectoryExists(UPD_BASE_DIR);
-                EnsureDirectoryExists(Path.GetDirectoryName(UPD_LOG_FILE));
+                EnsureDirectoryExists(UpdBaseDir);
+                EnsureDirectoryExists(Path.GetDirectoryName(UpdLogFile));
 
                 LogHelper.WriteLog("ExportsPage.InitializeUpdTab", "Вкладка УПД инициализирована");
             }
@@ -1020,9 +1051,9 @@ namespace WinUIOrderApp.Views.Pages
             var ids = new HashSet<string>();
             try
             {
-                if (File.Exists(UPD_LOG_FILE))
+                if (File.Exists(UpdLogFile))
                 {
-                    var lines = File.ReadAllLines(UPD_LOG_FILE);
+                    var lines = File.ReadAllLines(UpdLogFile);
                     foreach (var line in lines)
                     {
                         if (!string.IsNullOrWhiteSpace(line))
@@ -1041,7 +1072,7 @@ namespace WinUIOrderApp.Views.Pages
         {
             try
             {
-                File.AppendAllText(UPD_LOG_FILE, docId + Environment.NewLine);
+                File.AppendAllText(UpdLogFile, docId + Environment.NewLine);
             }
             catch (Exception ex)
             {
@@ -1106,13 +1137,13 @@ namespace WinUIOrderApp.Views.Pages
         {
             try
             {
-                EnsureDirectoryExists(UPD_BASE_DIR);
+                EnsureDirectoryExists(UpdBaseDir);
 
                 var certName = AppState.Instance.CertificateOwnerPublicName ?? "Unknown";
                 var cleanCertName = new string(certName.Where(c => char.IsLetterOrDigit(c) || c == ' ').ToArray());
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 var fileName = $"УПД_{updData.Count}_{timestamp}_{cleanCertName}.txt";
-                var filePath = Path.Combine(UPD_BASE_DIR, fileName);
+                var filePath = Path.Combine(UpdBaseDir, fileName);
 
                 var sb = new StringBuilder();
                 sb.AppendLine("CIS|Name|GTIN|Контрагент|№ УПД|Дата документа|Тип|Статус");

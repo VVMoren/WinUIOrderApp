@@ -19,8 +19,11 @@
     <Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
         <conv:ProductGroupCodeToIconConverter x:Key="ProductGroupCodeToIconConverter"/>
+        <conv:CertificateSimpleNameConverter x:Key="CertificateSimpleNameConverter"/>
+        <conv:CertificateDetailsConverter x:Key="CertificateDetailsConverter"/>
+        <conv:CertificateIssuerConverter x:Key="CertificateIssuerConverter"/>
 
-        <!-- Стили для элементов Settings -->
+        <!-- Тематические стили -->
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -28,13 +31,202 @@
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
 
-        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Background" Value="#FF2D2D2D"/>
+        <Style x:Key="CertificateComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#FF333333"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="12,10"
+                                Margin="2,2,2,4">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#FF2D3645"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#FF303B4E"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#FF394E73"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ItemBorder" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
+
+        <Style x:Key="CertificateComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FF242429"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF3A3F4A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,12,48,12"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="OuterBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10"
+                                    SnapsToDevicePixels="True">
+                                <Grid>
+                                    <ContentPresenter x:Name="ContentPresenter"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      Content="{TemplateBinding SelectedItem}"
+                                                      ContentTemplate="{TemplateBinding ItemTemplate}"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    <TextBlock x:Name="Placeholder"
+                                               Text="Выберите сертификат"
+                                               Margin="{TemplateBinding Padding}"
+                                               VerticalAlignment="Center"
+                                               Foreground="#FF7C8498"
+                                               FontSize="13"
+                                               Visibility="Collapsed"/>
+                                    <Grid HorizontalAlignment="Right"
+                                          Width="44"
+                                          Background="#1921283A"
+                                          Margin="0"
+                                          ClipToBounds="True">
+                                        <Path Data="M 0 0 L 8 0 L 4 5 Z"
+                                              Fill="#FF8AB4FF"
+                                              Stretch="Uniform"
+                                              Width="12"
+                                              Height="8"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Grid Margin="0,6,0,0">
+                                    <Border x:Name="DropShadow"
+                                            Background="Transparent"
+                                            CornerRadius="12"
+                                            Margin="6"
+                                            Opacity="0.45">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#CC000000"/>
+                                        </Border.Effect>
+                                    </Border>
+                                    <Border x:Name="DropDownBorder"
+                                            Background="#FF1F1F26"
+                                            BorderBrush="#FF3A3F4A"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Padding="4"
+                                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                            SnapsToDevicePixels="True">
+                                        <ScrollViewer Margin="0" SnapsToDevicePixels="True">
+                                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="OuterBorder" Property="Opacity" Value="0.5"/>
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#FF2D2D2D"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#FF4E8DFF"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#FF6FA7FF"/>
+                                <Setter TargetName="OuterBorder" Property="Background" Value="#FF2A2F3D"/>
+                            </Trigger>
+                            <Trigger Property="IsDropDownOpen" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#FF6FA7FF"/>
+                                <Setter TargetName="OuterBorder" Property="Background" Value="#FF2A2F3D"/>
+                            </Trigger>
+                            <Trigger Property="SelectedItem" Value="{x:Null}">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="CertificateSelectorItemTemplate">
+            <Grid Margin="4,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="{Binding Converter={StaticResource CertificateSimpleNameConverter}}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,0,0,2"/>
+                    <TextBlock FontSize="12"
+                               Foreground="#FFA9AFBF"
+                               TextTrimming="CharacterEllipsis">
+                        <Run Text="Издатель: "/>
+                        <Run Text="{Binding Converter={StaticResource CertificateIssuerConverter}}"/>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBlock FontSize="12" Foreground="#FFA9AFBF" Margin="0,0,8,0">
+                            <Run Text="Действителен до "/>
+                            <Run Text="{Binding NotAfter, StringFormat={}{0:dd.MM.yyyy}}"/>
+                        </TextBlock>
+                        <Border Background="#332196F3" CornerRadius="6" Padding="6,2" Visibility="{Binding HasPrivateKey, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="с приватным ключом"
+                                       FontSize="11"
+                                       Foreground="#FF64B5F6"
+                                       FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Margin="16,0,0,0"
+                        Background="#19334E68"
+                        CornerRadius="8"
+                        Padding="10,6"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Thumbprint}"
+                               FontSize="12"
+                               FontFamily="Cascadia Code, Consolas, 'Courier New', monospace"
+                               Foreground="#FF7DD3FF"
+                               TextTrimming="CharacterEllipsis"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FF2196F3"/>
@@ -79,25 +271,14 @@
                 Style="{StaticResource SectionHeaderStyle}"/>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                <ComboBox 
-                    Width="400"
-                    Style="{StaticResource ComboBoxStyle}"
+                <ComboBox
+                    Width="420"
+                    Style="{StaticResource CertificateComboBoxStyle}"
                     ItemsSource="{Binding Certificates}"
-                    SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}" Foreground="Black">
-                    <ComboBox.OpacityMask>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="Black"/>
-                            <GradientStop Color="#FF635E5E" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ComboBox.OpacityMask>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock 
-                                Text="{Binding SubjectName.Name}" 
-                                Foreground="Black"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding SelectedCertificate, Mode=TwoWay}"
+                    ItemContainerStyle="{StaticResource CertificateComboBoxItemStyle}"
+                    ItemTemplate="{StaticResource CertificateSelectorItemTemplate}"
+                    MaxDropDownHeight="340"/>
 
                 <Button
                     Content="Подключиться к ГИС МТ"
@@ -214,15 +395,37 @@
             </Expander>
 
             <!-- Дополнительные настройки -->
-            <Expander 
-                Header="⚙️ Дополнительные настройки" 
+            <Expander
+                Header="⚙️ Дополнительные настройки"
                 Style="{StaticResource ExpanderStyle}"
                 IsExpanded="False">
                 <StackPanel Margin="12,8,12,12">
-                    <TextBlock 
-                        Text="Здесь могут быть дополнительные настройки приложения..." 
-                        Foreground="#FFB0B0B0"
-                        FontStyle="Italic"/>
+                    <StackPanel Orientation="Vertical" Spacing="8">
+                        <TextBlock
+                            Text="Расширенные параметры сертификата"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
+
+                        <CheckBox
+                            Content="Использовать криптохвосты при обработке КМ"
+                            Foreground="White"
+                            IsChecked="{Binding IsCryptoTailSearchEnabled, Mode=TwoWay}"
+                            IsEnabled="{Binding CanModifyCertificatePreferences}"
+                            Margin="0,4,0,0"/>
+
+                        <TextBlock
+                            Text="При включении станет доступен выбор папки с криптохвостами и расширенная обработка данных на главной странице."
+                            TextWrapping="Wrap"
+                            Foreground="#FFB0B0B0"
+                            FontSize="12"/>
+
+                        <Button
+                            Content="Сохранить настройки"
+                            Style="{StaticResource ButtonStyle}"
+                            Command="{Binding SaveCertificatePreferencesCommand}"
+                            IsEnabled="{Binding CanModifyCertificatePreferences}"
+                            Width="160"/>
+                    </StackPanel>
                 </StackPanel>
             </Expander>
 
