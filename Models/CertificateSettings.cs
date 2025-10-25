@@ -50,8 +50,6 @@ namespace WinUIOrderApp.Models
         public string CryptoTailFolderPath { get; set; } = string.Empty;
         public string ProductCacheFileName { get; set; } = string.Empty;
         public DateTime? ProductCacheUpdatedAt { get; set; }
-        {
-            get; set;
-        }
+
     }
 }
