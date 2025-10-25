@@ -32,6 +32,7 @@ namespace WinUIOrderApp
             {
                 // --- ViewModels (регистрируем те, что используются в Page constructors) ---
                 services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<DataPageViewModel>();
                 services.AddSingleton<MainWindowViewModel>();
             
                 // страницы часто используют ViewModel'ы — регистрируем их тоже

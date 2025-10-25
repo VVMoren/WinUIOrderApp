@@ -32,5 +32,19 @@ namespace WinUIOrderApp.Models
         {
             get; set;
         }
+        public string Gtin
+        {
+            get; set;
+        } = string.Empty;
+
+        public string Ki
+        {
+            get; set;
+        } = string.Empty;
+
+        public string FullCode
+        {
+            get; set;
+        } = string.Empty;
     }
 }

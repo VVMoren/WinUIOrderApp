@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WinUIOrderApp.ViewModels.Windows;
@@ -29,6 +30,27 @@ namespace WinUIOrderApp.Views.Windows
                 var dashboard = _services.GetRequiredService<DashboardPage>();
                 ContentFrame.Navigate(dashboard);
             };
+
+            AppState.Instance.NavigateToExportsRequested += OnNavigateToExportsRequested;
+        }
+
+        private void OnNavigateToExportsRequested()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var exportsItem = NavList.Items.Cast<ListBoxItem?>()
+                    .FirstOrDefault(item => item?.Tag as string == "ExportsPage");
+
+                if (exportsItem != null)
+                {
+                    NavList.SelectedItem = exportsItem;
+                }
+                else
+                {
+                    var exportsPage = _services.GetRequiredService<ExportsPage>();
+                    ContentFrame.Navigate(exportsPage);
+                }
+            });
         }
 
         private void NavList_SelectionChanged(object sender, SelectionChangedEventArgs e)

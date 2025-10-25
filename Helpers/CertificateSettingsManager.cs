@@ -21,6 +21,20 @@ namespace WinUIOrderApp.Helpers
             return Path.Combine(certDir, "Settings.json");
         }
 
+        public static string GetCertificateDirectory(string inn)
+        {
+            var certDir = Path.Combine(BaseSettingsDir, inn);
+            Directory.CreateDirectory(certDir);
+            return certDir;
+        }
+
+        public static string GetCertificateDataDirectory(string inn)
+        {
+            var dataDir = Path.Combine(GetCertificateDirectory(inn), "данные");
+            Directory.CreateDirectory(dataDir);
+            return dataDir;
+        }
+
         public static string GetCertificateLogPath(string inn)
         {
             var certDir = Path.Combine(BaseSettingsDir, inn);

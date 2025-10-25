@@ -314,8 +314,25 @@
 
                         <!-- Расширенные -->
                         <TabItem Header="Расширенные" Foreground="Black">
-                            <StackPanel Margin="12,8,12,12">
-                                <TextBlock Text="расширеные настр." Foreground="Black" Margin="0,0,0,12"/>
+                            <StackPanel Margin="12,8,12,12" Orientation="Vertical">
+                                <TextBlock Text="Настройки расширенных функций" Foreground="Black" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <CheckBox
+                                    Content="Включить работу с криптохвостами и кешем товаров"
+                                    IsChecked="{Binding IsCryptoTailSearchEnabled, Mode=TwoWay}"
+                                    Foreground="Black"
+                                    Margin="0,0,0,4"/>
+                                <TextBlock
+                                    Text="После сохранения станет доступен выбор папки с криптохвостами и кнопки на главной странице."
+                                    Foreground="#FF5A5A5A"
+                                    TextWrapping="Wrap"
+                                    Margin="0,4,0,8"/>
+                                <Button
+                                    Content="Сохранить расширенные настройки"
+                                    Style="{StaticResource ButtonStyle}"
+                                    Command="{Binding SaveAdvancedSettingsCommand}"
+                                    Width="250"
+                                    Background="#FFF6F42E"
+                                    Foreground="Black"/>
                             </StackPanel>
                         </TabItem>
 

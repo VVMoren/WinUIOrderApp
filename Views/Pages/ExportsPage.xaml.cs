@@ -20,6 +20,8 @@ namespace WinUIOrderApp.Views.Pages
     public partial class ExportsPage : Page
     {
         private CancellationTokenSource _kmCts;
+        private bool _isLoaded;
+        private bool _autoDownloadInProgress;
         private readonly string KM_BASE_DIR = @"H:\Документы\WinUIOrderApp\km";
         private const string NCP_TOBACCO_URL = "https://tobacco.crpt.ru";
         private const string URL_CIS_SEARCH = $"{NCP_TOBACCO_URL}/bff-elk/v1/cis/search";
@@ -204,6 +206,7 @@ namespace WinUIOrderApp.Views.Pages
 
         private async void ExportsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            _isLoaded = true;
             LogHelper.WriteLog("ExportsPage.ExportsPage_Loaded", "Страница ExportsPage загружена");
             UpdateTokenStatus();
             KmDataGrid.ItemsSource = KmResults;
@@ -211,11 +214,18 @@ namespace WinUIOrderApp.Views.Pages
             UpdDataGrid.ItemsSource = UpdResults;
 
             InitializeUpdTab();
+            AppState.Instance.KmDownloadRequested += OnKmDownloadRequested;
+
+            if (AppState.Instance.ConsumePendingKmDownload())
+            {
+                OnKmDownloadRequested();
+            }
         }
 
         private void ExportsPage_Unloaded(object sender, RoutedEventArgs e)
         {
             LogHelper.WriteLog("ExportsPage.ExportsPage_Unloaded", "Страница ExportsPage выгружена");
+            _isLoaded = false;
             _kmCts?.Cancel();
             _kmCts?.Dispose();
             _kmCts = null;
@@ -223,6 +233,36 @@ namespace WinUIOrderApp.Views.Pages
             _updCts?.Cancel();
             _updCts?.Dispose();
             _updCts = null;
+
+            AppState.Instance.KmDownloadRequested -= OnKmDownloadRequested;
+        }
+
+        private async void OnKmDownloadRequested()
+        {
+            if (!_isLoaded || _autoDownloadInProgress)
+                return;
+
+            try
+            {
+                _autoDownloadInProgress = true;
+
+                if (!StatusItems.Any())
+                    LoadCisStatuses();
+
+                var statuses = StatusItems.Where(s => s.IsSelected).Select(s => s.Id).ToList();
+                if (!statuses.Any())
+                {
+                    statuses = new List<int> { 2, 6 };
+                    foreach (var item in StatusItems)
+                        item.IsSelected = statuses.Contains(item.Id);
+                }
+
+                await GetKmDataParallelAsync(statuses);
+            }
+            finally
+            {
+                _autoDownloadInProgress = false;
+            }
         }
 
         private void UpdateTokenStatus()
@@ -471,8 +511,10 @@ namespace WinUIOrderApp.Views.Pages
                         KmProgressBar.Value = KmProgressBar.Maximum;
                     });
 
+                    var cisList = allCisData.ToList();
                     // Сохранение результатов в файл
-                    await SaveKmResultsToFile(allCisData.ToList());
+                    await SaveKmResultsToFile(cisList);
+                    AppState.Instance.UpdateLatestCisItems(cisList);
 
                     KmStatusText.Text = "Готово";
                     KmProgressText.Text = $"Получено {allCisData.Count:N0} КМ, {uniqueGtins.Count:N0} уникальных GTIN";
@@ -625,10 +667,13 @@ namespace WinUIOrderApp.Views.Pages
                     ProductName = CleanString(item.name ?? item.cisPrintView ?? item.cis)
                 };
 
+                cisItem.Gtin = CleanString(item.gtin);
+                cisItem.Ki = MarkingCodeParser.ExtractKi(cisItem.Cis);
+
                 allCisData.Add(cisItem);
 
-                if (!string.IsNullOrEmpty(item.gtin))
-                    uniqueGtins.Add(CleanString(item.gtin));
+                if (!string.IsNullOrEmpty(cisItem.Gtin))
+                    uniqueGtins.Add(cisItem.Gtin);
             }
         }
 
