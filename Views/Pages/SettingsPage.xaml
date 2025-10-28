@@ -134,7 +134,7 @@
                             <Border BorderBrush="{StaticResource Seg_Border}"
                     BorderThickness="1"
                     CornerRadius="6"
-                    Background="White"
+                    Background="#FF252525"
                     Margin="12,0,12,12"
                     Padding="8">
                                 <ContentPresenter ContentSource="SelectedContent"/>
