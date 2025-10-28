@@ -88,7 +88,10 @@ namespace WinUIOrderApp.Helpers
             set
             {
                 if (SetProperty(ref _useCryptoTailSearch, value))
+                {
                     AdvancedSettingsChanged?.Invoke();
+                    SaveSettings();
+                }
             }
         }
 
@@ -208,7 +211,9 @@ namespace WinUIOrderApp.Helpers
                 var settings = new AppUserSettings
                 {
                     CertificateThumbprint = SelectedCertificate?.Thumbprint,
-                    ProductGroupCode = SelectedProductGroupCode
+                    ProductGroupCode = SelectedProductGroupCode,
+                    UseCryptoTailSearch = UseCryptoTailSearch, // СОХРАНЯЕМ
+                    CryptoTailFolderPath = CryptoTailFolderPath // СОХРАНЯЕМ
                 };
 
                 File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
@@ -231,6 +236,8 @@ namespace WinUIOrderApp.Helpers
                     return;
 
                 SelectedProductGroupCode = settings.ProductGroupCode;
+                UseCryptoTailSearch = settings.UseCryptoTailSearch; // ЗАГРУЖАЕМ
+                CryptoTailFolderPath = settings.CryptoTailFolderPath; // ЗАГРУЖАЕМ
 
                 if (!string.IsNullOrEmpty(settings.CertificateThumbprint))
                 {
@@ -244,7 +251,6 @@ namespace WinUIOrderApp.Helpers
                 Console.WriteLine($"[AppState] Ошибка загрузки настроек: {ex.Message}");
             }
         }
-
         private X509Certificate2? FindCertificateByThumbprint(string thumbprint)
         {
             using var store = new X509Store(StoreLocation.CurrentUser);
@@ -283,6 +289,11 @@ namespace WinUIOrderApp.Helpers
             {
                 get; set;
             }
+            public bool UseCryptoTailSearch
+            {
+                get; set;
+            }
+            public string CryptoTailFolderPath { get; set; } = string.Empty;
         }
 
         // === 🔹 Утилита: извлечение CN из Subject сертификата ===

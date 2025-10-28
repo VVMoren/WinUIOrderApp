@@ -58,7 +58,6 @@ namespace WinUIOrderApp.Services
 
             var result = new List<NationalCatalogProductInfo>();
 
-            // Разбиваем на пачки по 50 GTIN
             var chunks = gtins
                 .Where(g => !string.IsNullOrWhiteSpace(g))
                 .Select(g => g.Trim())
@@ -86,5 +85,73 @@ namespace WinUIOrderApp.Services
 
             return result;
         }
+    }
+
+    public class NationalCatalogGood
+    {
+        public long GoodId
+        {
+            get; set;
+        }
+        public string Gtin { get; set; } = string.Empty;
+        public string GoodName { get; set; } = string.Empty;
+        public string Tnved { get; set; } = string.Empty;
+        public string BrandName { get; set; } = string.Empty;
+        public string GoodStatus { get; set; } = string.Empty;
+        public string UpdatedDate { get; set; } = string.Empty;
+    }
+
+    public class NationalCatalogProductInfo
+    {
+        public long GoodId
+        {
+            get; set;
+        }
+        public string Gtin { get; set; } = string.Empty;
+        public string GoodName { get; set; } = string.Empty;
+        public string BrandName { get; set; } = string.Empty;
+        public string GoodStatus { get; set; } = string.Empty;
+        public string ProducerInn { get; set; } = string.Empty;
+        public string ProducerName { get; set; } = string.Empty;
+        public List<string> Categories { get; set; } = new();
+        public Dictionary<string, string> Attributes { get; set; } = new();
+        public bool GoodMarkFlag
+        {
+            get; set;
+        }
+        public string FirstSignDate { get; set; } = string.Empty;
+
+        // Дополнительные поля для совместимости
+        public int? ProductGroupId
+        {
+            get; set;
+        }
+        public string ProductGroupCode { get; set; } = string.Empty;
+        public string ProductKind { get; set; } = string.Empty;
+        public string TnVed { get; set; } = string.Empty;
+        public string PackageType { get; set; } = string.Empty;
+        public string Nicotine { get; set; } = string.Empty;
+        public string Volume { get; set; } = string.Empty;
+    }
+    public class NationalCatalogProductListResponse
+    {
+        public NationalCatalogProductListResult Result
+        {
+            get; set;
+        }
+    }
+
+    public class NationalCatalogProductListResult
+    {
+        public List<NationalCatalogGood> Goods { get; set; } = new();
+        public int Total
+        {
+            get; set;
+        }
+    }
+
+    public class NationalCatalogProductInfoResponse
+    {
+        public List<NationalCatalogProductInfo> Results { get; set; } = new();
     }
 }

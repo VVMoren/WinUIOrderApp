@@ -27,7 +27,6 @@ namespace WinUIOrderApp.Models
         public int DefaultWarehouseId { get; set; } = 0;
         public string NotificationEmail { get; set; } = string.Empty;
 
-        // Новые параметры
         public string OmsId { get; set; } = string.Empty;
         public string ConnectionId { get; set; } = string.Empty;
     }
@@ -47,7 +46,6 @@ namespace WinUIOrderApp.Models
         public bool EnableTelemetry { get; set; } = true;
         public string CustomApiUrl { get; set; } = string.Empty;
 
-        // Параметры для работы с криптохвостами и кешем товаров
         public bool EnableCryptoTailSearch { get; set; } = false;
         public string CryptoTailFolderPath { get; set; } = string.Empty;
         public string ProductCacheFileName { get; set; } = string.Empty;
@@ -55,5 +53,18 @@ namespace WinUIOrderApp.Models
         {
             get; set;
         }
+
+        public int ProductCacheCount
+        {
+            get; set;
+        }
+        public string ProductCacheFormat { get; set; } = "detailed";
+        public DateTime? ProductCacheLastSync
+        {
+            get; set;
+        }
+        public bool UseCryptoTailSearch { get; set; } = false;
+        public int ProductCacheVersion { get; set; } = 1;
+        public string ProductCacheChecksum { get; set; } = string.Empty;
     }
 }

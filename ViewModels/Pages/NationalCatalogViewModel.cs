@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -8,6 +9,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using WinUIOrderApp.Helpers;
 using WinUIOrderApp.Models;
 using WinUIOrderApp.Services;
@@ -122,7 +125,7 @@ namespace WinUIOrderApp.ViewModels.Pages
                 // Получаем API Key из настроек сертификата
                 var inn = AppState.ExtractInn(AppState.Instance.CertificateOwner);
                 var settings = CertificateSettingsManager.LoadSettings(inn);
-                var apiKey = settings.Nk.NkApiKey; // Используем API Key если есть
+                var apiKey = settings.Nk.NkApiKey;
 
                 if (string.IsNullOrWhiteSpace(AppState.Instance.Token) && string.IsNullOrEmpty(apiKey))
                 {
@@ -181,21 +184,23 @@ namespace WinUIOrderApp.ViewModels.Pages
                     if (!infoLookup.TryGetValue(key, out var detail) || detail == null)
                         continue;
 
+                    // ИСПРАВЛЕНИЕ: Используем правильные свойства из моделей
                     Items.Add(new NationalCatalogRow
                     {
                         GoodId = good.GoodId,
                         Gtin = good.Gtin ?? string.Empty,
-                        Name = string.IsNullOrWhiteSpace(good.GoodName) ? detail.Name ?? string.Empty : good.GoodName,
-                        Brand = string.IsNullOrWhiteSpace(good.BrandName) ? detail.Brand ?? string.Empty : good.BrandName,
+                        Name = string.IsNullOrWhiteSpace(good.GoodName) ? detail.GoodName ?? string.Empty : good.GoodName,
+                        Brand = string.IsNullOrWhiteSpace(good.BrandName) ? detail.BrandName ?? string.Empty : good.BrandName,
                         ProductGroupId = detail.ProductGroupId,
                         ProductGroupCode = detail.ProductGroupCode ?? string.Empty,
                         ProductKind = detail.ProductKind ?? string.Empty,
                         Status = (detail.GoodStatus ?? good.GoodStatus) ?? string.Empty,
-                        DetailedStatus = good.GoodDetailedStatus != null ? string.Join(", ", good.GoodDetailedStatus) : string.Empty,
-                        TnVed = detail.TnVedCode10 ?? detail.TnVedCode ?? (good.Tnved ?? string.Empty),
+                        // ИСПРАВЛЕНИЕ: Убрано GoodDetailedStatus, т.к. его нет в моделях
+                        DetailedStatus = string.Empty, // Оставляем пустым или используем другой источник
+                        TnVed = detail.TnVed ?? (good.Tnved ?? string.Empty),
                         PackageType = detail.PackageType ?? string.Empty,
-                        Nicotine = detail.NicotineConcentration ?? string.Empty,
-                        Volume = detail.VolumeLiquid ?? string.Empty,
+                        Nicotine = detail.Nicotine ?? string.Empty,
+                        Volume = detail.Volume ?? string.Empty,
                         Updated = FormatDate(good.UpdatedDate)
                     });
                 }

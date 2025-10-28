@@ -46,5 +46,16 @@ namespace WinUIOrderApp.Models
         {
             get; set;
         } = string.Empty;
+
+        public string? CryptoTail
+        {
+            get; set;
+        }
+        public bool HasCryptoTail
+        {
+            get; set;
+        }
+
+
     }
 }

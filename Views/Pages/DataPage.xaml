@@ -73,9 +73,9 @@
                   AutoGenerateColumns="False"
                   Margin="12"
                   HeadersVisibility="Column"
-                  RowBackground="#252525"
+                  RowBackground="#797979"
                   AlternatingRowBackground="#303030"
-                  Foreground="White"
+                  Foreground="Black"
                   Background="#1F1F1F"
                   GridLinesVisibility="Horizontal"
                   IsReadOnly="True">

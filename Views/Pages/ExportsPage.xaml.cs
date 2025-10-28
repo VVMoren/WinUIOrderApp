@@ -658,11 +658,21 @@ namespace WinUIOrderApp.Views.Pages
 
         private void ProcessPageResults(CisSearchResponse pageData, ConcurrentBag<CisItem> allCisData, ConcurrentHashSet<string> uniqueGtins)
         {
+            // ЗАГРУЖАЕМ КРИПТОХВОСТЫ ПРИ ОБРАБОТКЕ КАЖДОЙ СТРАНИЦЫ
+            var cryptoTails = new Dictionary<string, string>();
+            if (AppState.Instance.UseCryptoTailSearch && !string.IsNullOrEmpty(AppState.Instance.CryptoTailFolderPath))
+            {
+                cryptoTails = CryptoTailService.BuildIndex(AppState.Instance.CryptoTailFolderPath);
+                LogHelper.WriteLog("ExportsPage.ProcessPageResults",
+                    $"Загружено криптохвостов: {cryptoTails.Count} из папки: {AppState.Instance.CryptoTailFolderPath}");
+            }
+
             foreach (var item in pageData.result)
             {
+                var cis = CleanString(item.cis);
                 var cisItem = new CisItem
                 {
-                    Cis = CleanString(item.cis),
+                    Cis = cis,
                     Name = CleanString(item.name ?? item.cisPrintView ?? item.cis),
                     ProductName = CleanString(item.name ?? item.cisPrintView ?? item.cis)
                 };
@@ -670,13 +680,51 @@ namespace WinUIOrderApp.Views.Pages
                 cisItem.Gtin = CleanString(item.gtin);
                 cisItem.Ki = MarkingCodeParser.ExtractKi(cisItem.Cis);
 
+                // ПОИСК КРИПТОХВОСТА ДЛЯ ЭТОГО КМ
+                if (cryptoTails.Count > 0)
+                {
+                    string? foundCryptoTail = null;
+
+                    // Прямой поиск
+                    if (cryptoTails.TryGetValue(cis, out var directMatch))
+                    {
+                        foundCryptoTail = directMatch;
+                        LogHelper.WriteLog("ExportsPage.CryptoTailMatch",
+                            $"Прямое совпадение: {cis} -> {directMatch}");
+                    }
+                    else
+                    {
+                        // Поиск по частичному совпадению
+                        foundCryptoTail = CryptoTailService.FindCryptoTail(cis, AppState.Instance.CryptoTailFolderPath);
+                        if (foundCryptoTail != null)
+                        {
+                            LogHelper.WriteLog("ExportsPage.CryptoTailPartialMatch",
+                                $"Частичное совпадение: {cis} -> {foundCryptoTail}");
+                        }
+                    }
+
+                    if (foundCryptoTail != null)
+                    {
+                        // Сохраняем найденный криптохвост в объект
+                        cisItem.CryptoTail = foundCryptoTail;
+                        cisItem.HasCryptoTail = true;
+
+                        LogHelper.WriteLog("ExportsPage.CryptoTailFound",
+                            $"Найден криптохвост для КМ: {cis}");
+                    }
+                    else
+                    {
+                        LogHelper.WriteLog("ExportsPage.CryptoTailNotFound",
+                            $"Криптохвост не найден для КМ: {cis}. Доступные хвосты: {string.Join(", ", cryptoTails.Keys.Take(3))}...");
+                    }
+                }
+
                 allCisData.Add(cisItem);
 
                 if (!string.IsNullOrEmpty(cisItem.Gtin))
                     uniqueGtins.Add(cisItem.Gtin);
             }
         }
-
         private async Task UpdateProgressAsync(int totalCodes, int uniqueGtins, int currentPage)
         {
             await Application.Current.Dispatcher.InvokeAsync(() =>
