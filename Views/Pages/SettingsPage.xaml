@@ -315,24 +315,42 @@
                         <!-- Расширенные -->
                         <TabItem Header="Расширенные" Foreground="Black">
                             <StackPanel Margin="12,8,12,12" Orientation="Vertical">
-                                <TextBlock Text="Настройки расширенных функций" Foreground="Black" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                                <CheckBox
-                                    Content="Включить работу с криптохвостами и кешем товаров"
-                                    IsChecked="{Binding IsCryptoTailSearchEnabled, Mode=TwoWay}"
-                                    Foreground="Black"
-                                    Margin="0,0,0,4"/>
-                                <TextBlock
-                                    Text="После сохранения станет доступен выбор папки с криптохвостами и кнопки на главной странице."
-                                    Foreground="#FF5A5A5A"
-                                    TextWrapping="Wrap"
-                                    Margin="0,4,0,8"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                    <CheckBox
+                                        Content="Искать крипто-хвост для КМ"
+                                        IsChecked="{Binding IsCryptoTailSearchEnabled, Mode=TwoWay}"
+                                        Foreground="Black"
+                                        FontWeight="Bold"/>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,8,12,12" Orientation="Horizontal" Width="682">
+                                    <TextBlock 
+                                        Text="log файл:" 
+                                        FontWeight="SemiBold" 
+                                        Foreground="Black" 
+                                        Margin="0,5,0,0"/>
+
+                                    <TextBox
+                                        Style="{StaticResource TextBoxStyle}"
+                                        Text="{Binding LogFilePath, Mode=OneWay}"
+                                        IsReadOnly="True"
+                                        FontFamily="Consolas"
+                                        Margin="10,0,10,0" Width="494"/>
+
+                                    <Button
+                                        Content="Выбрать папку"
+                                        Style="{StaticResource ButtonStyle}"
+                                        Command="{Binding SelectLogFilePathCommand}"
+                                        Width="90" Background="#FFF6F42E" Foreground="Black" Height="24" FontSize="10"/>
+                                </StackPanel>
+
                                 <Button
-                                    Content="Сохранить расширенные настройки"
+                                    Content="Сохранить"
                                     Style="{StaticResource ButtonStyle}"
                                     Command="{Binding SaveAdvancedSettingsCommand}"
                                     Width="250"
                                     Background="#FFF6F42E"
-                                    Foreground="Black"/>
+                                    Foreground="Black" FontWeight="Bold"/>
                             </StackPanel>
                         </TabItem>
 
@@ -342,30 +360,8 @@
             </Expander>
 
             <!-- Expander для лог-файла -->
-            <Expander 
-                Header="📝 Настройки лог-файла" 
-                Style="{StaticResource ExpanderStyle}"
-                IsExpanded="false">
-                <StackPanel Margin="12,8,12,12">
-                    <TextBlock 
-                        Text="Путь хранения лог-файла:" 
-                        FontWeight="SemiBold" 
-                        Foreground="#FFB0B0B0" 
-                        Margin="0,0,0,6"/>
+            <Expander Header="📝 Настройки лог-файла" Style="{StaticResource ExpanderStyle}" IsExpanded="True">
 
-                    <TextBox
-                        Style="{StaticResource TextBoxStyle}"
-                        Text="{Binding LogFilePath, Mode=OneWay}"
-                        IsReadOnly="True"
-                        FontFamily="Consolas"
-                        Margin="0,0,0,12"/>
-
-                    <Button
-                        Content="Выбрать папку"
-                        Style="{StaticResource ButtonStyle}"
-                        Command="{Binding SelectLogFilePathCommand}"
-                        Width="107" Background="#FFF6F42E" Foreground="Black" Height="23"/>
-                </StackPanel>
             </Expander>
         </StackPanel>
     </ScrollViewer>
