@@ -64,11 +64,11 @@
         </Style>
 
         <!-- Цвета -->
-        <SolidColorBrush x:Key="Seg_Background" Color="White"/>
-        <SolidColorBrush x:Key="Seg_Border" Color="#FFBFD6E9"/>
+        <SolidColorBrush x:Key="Seg_Background" Color="#FF252525"/>
+        <SolidColorBrush x:Key="Seg_Border" Color="#FFF6F42E"/>
         <SolidColorBrush x:Key="Seg_Selected" Color="#FFF6F42E"/>
-        <SolidColorBrush x:Key="Seg_Text" Color="#FF0A0A0A"/>
-        <SolidColorBrush x:Key="Seg_SelectedText" Color="#FF0A0A0A"/>
+        <SolidColorBrush x:Key="Seg_Text" Color="White"/>
+        <SolidColorBrush x:Key="Seg_SelectedText" Color="Black"/>
 
         <!-- 2) Стиль для каждой "плитки" (TabItem) -->
         <Style x:Key="SegmentedTabItemStyle" TargetType="TabItem">
@@ -248,9 +248,9 @@
                 FontSize="18"/>
 
             <!-- доп -->
-            <Expander Header="⚙️ Дополнительные настройки" Style="{StaticResource ExpanderStyle}" IsExpanded="True">
+            <Expander Header="⚙️ Дополнительные настройки" Style="{StaticResource ExpanderStyle}" IsExpanded="True" >
                 <Grid>
-                    <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0" Background="#FF1F1F1F">
+                    <TabControl Style="{StaticResource SegmentedTabControlStyle}" SelectedIndex="0" Background="#FF1F1F1F" FontFamily="Courier New" Margin="0,-1,0,1">
                         <!-- ЛК ЧЗ -->
                         <TabItem Header="Профиль" Foreground="Black">
                             <StackPanel Margin="12,8,12,12">

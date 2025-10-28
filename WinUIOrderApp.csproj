@@ -11,13 +11,14 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <!-- Основная иконка -->
   <ItemGroup>
     <Content Include="wpfui-icon.ico" />
   </ItemGroup>
 
+  <!-- Пакеты NuGet -->
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.2.1" />
-    <!-- Удалена Microsoft.UI.Xaml -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
@@ -35,78 +36,27 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-rc.1.25451.107" />
   </ItemGroup>
 
+  <!-- Основные ресурсы -->
   <ItemGroup>
     <EmbeddedResource Include="Resources\AGG\products_dict.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+
     <Content Include="Resources\Tools\cryptcp.win32.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
+  <!-- Ресурсы и иконки -->
   <ItemGroup>
-    <None Remove="Assets\logo-Checkmark.png" />
-    <None Remove="Assets\wpfui-icon-256.png" />
-    <None Remove="Assets\wpfui-icon-1024.png" />
-    <None Remove="Resources\AGG\products_dict.json" />
-    <None Remove="Resources\cis_statuses.json" />
-    <None Remove="Resources\document_statuses.json" />
-    <None Remove="Resources\document_types.json" />
-    <None Remove="Resources\emission_types.json" />
-    <None Remove="Resources\icon\Pages_icon\NationalCatalogPage.png" />
-    <None Remove="Resources\icon\product_groups\alcohol.png" />
-    <None Remove="Resources\icon\product_groups\autofluids.png" />
-    <None Remove="Resources\icon\product_groups\beer.png" />
-    <None Remove="Resources\icon\product_groups\bicycle.png" />
-    <None Remove="Resources\icon\product_groups\books.png" />
-    <None Remove="Resources\icon\product_groups\cableraw.png" />
-    <None Remove="Resources\icon\product_groups\carparts.png" />
-    <None Remove="Resources\icon\product_groups\chemistry.png" />
-    <None Remove="Resources\icon\product_groups\conserve.png" />
-    <None Remove="Resources\icon\product_groups\construction.png" />
-    <None Remove="Resources\icon\product_groups\electronics.png" />
-    <None Remove="Resources\icon\product_groups\fire.png" />
-    <None Remove="Resources\icon\product_groups\furs.png" />
-    <None Remove="Resources\icon\product_groups\heater.png" />
-    <None Remove="Resources\icon\product_groups\left.png" />
-    <None Remove="Resources\icon\product_groups\lp.png" />
-    <None Remove="Resources\icon\product_groups\meat.png" />
-    <None Remove="Resources\icon\product_groups\milk.png" />
-    <None Remove="Resources\icon\product_groups\ncp.png" />
-    <None Remove="Resources\icon\product_groups\nicotindev.png" />
-    <None Remove="Resources\icon\product_groups\opticfiber.png" />
-    <None Remove="Resources\icon\product_groups\otp.png" />
-    <None Remove="Resources\icon\product_groups\perfumery.png" />
-    <None Remove="Resources\icon\product_groups\petfood.png" />
-    <None Remove="Resources\icon\product_groups\pharmaraw.png" />
-    <None Remove="Resources\icon\product_groups\polymer.png" />
-    <None Remove="Resources\icon\product_groups\radio.png" />
-    <None Remove="Resources\icon\product_groups\seafood.png" />
-    <None Remove="Resources\icon\product_groups\shoes.png" />
-    <None Remove="Resources\icon\product_groups\softdrinks.png" />
-    <None Remove="Resources\icon\product_groups\sweets.png" />
-    <None Remove="Resources\icon\product_groups\tires.png" />
-    <None Remove="Resources\icon\product_groups\titan.png" />
-    <None Remove="Resources\icon\product_groups\tobacco.png" />
-    <None Remove="Resources\icon\product_groups\toys.png" />
-    <None Remove="Resources\icon\product_groups\vegetableoil.png" />
-    <None Remove="Resources\icon\product_groups\vetpharma.png" />
-    <None Remove="Resources\icon\product_groups\water.png" />
-    <None Remove="Resources\icon\product_groups\wheelchairs.png" />
-    <None Remove="Resources\order_statuses.json" />
-    <None Remove="Resources\package_types.json" />
-    <None Remove="Resources\production_types.json" />
-    <None Remove="Resources\product_groups.json" />
-    <None Remove="Resources\return_reasons.json" />
-    <None Remove="Resources\withdrawal_reasons.json" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <!-- Assets -->
     <Resource Include="Assets\logo-Checkmark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\wpfui-icon-256.png" />
     <Resource Include="Assets\wpfui-icon-1024.png" />
+
+    <!-- JSON-файлы -->
     <Resource Include="Resources\cis_statuses.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -117,17 +67,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\emission_types.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <!-- длинный список ресурсов PNG и JSON оставляем без изменений -->
-    <Content Include="Resources\icon\product_groups\alcohol.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\icon\product_groups\autofluids.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <!-- ... остальные Content/Resource как в исходном файле ... -->
-    <Resource Include="Resources\icon\Pages_icon\NationalCatalogPage.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\order_statuses.json">
@@ -148,8 +87,24 @@
     <Resource Include="Resources\withdrawal_reasons.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+
+    <!-- Pages_icon -->
+    <Content Include="Resources\icon\Pages_icon\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <!-- Product groups icons -->
+    <Content Include="Resources\icon\product_groups\*.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+
+    <!-- Прочие иконки -->
+    <Content Include="Resources\icon\other_icon\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
+  <!-- Ссылки на CryptoPro и dotnetcades -->
   <ItemGroup>
     <Reference Include="CryptoPro.Security.Cryptography">
       <HintPath>..\..\..\.nuget\packages\cryptopro.security.cryptography.pkcs\2025.4.17\runtimes\win-x64\lib\net8.0\CryptoPro.Security.Cryptography.dll</HintPath>
@@ -164,13 +119,11 @@
     </Reference>
   </ItemGroup>
 
+  <!-- Компиляция моделей -->
   <ItemGroup>
     <Compile Update="Models\SummaryItem.cs">
       <Generator>MSBuild:Compile</Generator>
     </Compile>
   </ItemGroup>
-  
-
-
 
 </Project>
